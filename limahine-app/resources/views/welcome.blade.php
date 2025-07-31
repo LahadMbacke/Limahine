@@ -18,6 +18,8 @@
         <a href="{{ url('/philosophy') }}" class="text-gray-600 hover:text-gray-800">Philosophie</a>
         <a href="{{ url('/testimonials') }}" class="text-gray-600 hover:text-gray-800">Témoignages</a>
         <a href="{{ url('/resources') }}" class="text-gray-600 hover:text-gray-800">Chercheurs</a>
+              <a href="{{ url('/publish') }}" class="text-gray-600 hover:text-gray-800">Publier</a>
+
       </div>
     </div>
   </nav>
@@ -111,23 +113,37 @@
     </div>
   </section>
 
-  <!-- Call to Action YouTube -->
-  <section class="bg-green-600 py-16">
+  <section id="posts" class="bg-yellow-50 py-16">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8 text-center text-yellow-700">Articles Récents</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            @foreach($posts as $post)
+                @if($post->is_published)
+                    <div class="bg-yellow-100 p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold mb-2 text-yellow-800">{{ $post->title }}</h3>
+                        <p class="text-yellow-700 mb-4">{{ Str::limit($post->content, 100) }}</p>
+                        <a href="#" class="text-yellow-600 hover:underline">Lire plus →</a>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action YouTube -->
+<section class="bg-yellow-800 shadow mt-12">
     <div class="container mx-auto px-6 text-center text-white">
-      <h2 class="text-3xl font-bold mb-4">Notre chaîne YouTube</h2>
-      <p class="mb-6">Plongez dans nos vidéos de récitation, d’exégèse et de témoignages sur Limahine.</p>
-      <a href="https://www.youtube.com/@limaahinetv2949" target="_blank" class="bg-white text-green-600 px-6 py-3 rounded-full hover:bg-gray-100 transition">
-        S’abonner maintenant
-      </a>
+        <h2 class="text-3xl font-bold mb-4">Notre chaîne YouTube</h2>
+        <p class="mb-6">Plongez dans nos vidéos de récitation, d’exégèse et de témoignages sur Limahine.</p>
+        <a href="https://www.youtube.com/@limaahinetv2949" target="_blank" class="bg-white text-yellow-600 px-6 py-3 rounded-full hover:bg-yellow-700 transition">
+            S’abonner maintenant
+        </a>
     </div>
-  </section>
+</section>
 
-  <!-- Footer -->
-  <footer class="bg-white shadow mt-12">
-    <div class="container mx-auto px-6 py-4 text-center text-gray-600">
-      &copy; 2025 Limahine. Tous droits réservés.
+<!-- Footer -->
+<footer class="bg-yellow-800 shadow mt-12">
+    <div class="container mx-auto px-6 py-4 text-center text-yellow-100">
+        &copy; 2025 Limahine. Tous droits réservés.
     </div>
-  </footer>
-
-</body>
-</html>
+</footer>
