@@ -29,8 +29,8 @@ class VideoTrailerSeeder extends Seeder
                     'en' => 'An introduction to the fundamental principles of spiritual education in the Mouride way.',
                     'ar' => 'مقدمة في المبادئ الأساسية للتعليم الروحي في الطريقة المريدية'
                 ],
-                'youtube_video_id' => 'dQw4w9WgXcQ', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                'youtube_video_id' => '2mt5VKuIOo8', // ID YouTube valide pour test
+                'youtube_original_url' => 'https://www.youtube.com/watch?v=2mt5VKuIOo8',
                 'start_time' => 0,
                 'end_time' => 30,
                 'trailer_duration' => 30,
@@ -52,8 +52,8 @@ class VideoTrailerSeeder extends Seeder
                     'en' => 'The rules of Islamic jurisprudence according to the school of thought of Sheikh Ahmadou Bamba.',
                     'ar' => 'قواعد الفقه الإسلامي حسب مدرسة الشيخ أحمدو بامبا'
                 ],
-                'youtube_video_id' => 'jNQXAC9IVRw', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+                'youtube_video_id' => 'M_xQ6L5zLvo', // ID YouTube valide pour test
+                'youtube_original_url' => 'https://www.youtube.com/watch?v=M_xQ6L5zLvo',
                 'start_time' => 0,
                 'end_time' => 45,
                 'trailer_duration' => 45,
@@ -75,8 +75,8 @@ class VideoTrailerSeeder extends Seeder
                     'en' => 'First part of the study of the prophetic biography according to Mouride teachings.',
                     'ar' => 'الجزء الأول من دراسة السيرة النبوية وفقا للتعاليم المريدية'
                 ],
-                'youtube_video_id' => '9bZkp7q19f0', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=9bZkp7q19f0',
+                'youtube_video_id' => 'XaSyKzUnxwc', // ID YouTube valide pour test
+                'youtube_original_url' => 'https://www.youtube.com/watch?v=XaSyKzUnxwc',
                 'start_time' => 0,
                 'end_time' => 60,
                 'trailer_duration' => 60,
@@ -98,8 +98,8 @@ class VideoTrailerSeeder extends Seeder
                     'en' => 'Discovery of spiritual poems and their deep meaning in the Mouride tradition.',
                     'ar' => 'اكتشاف القصائد الروحية ومعناها العميق في التقليد المريدي'
                 ],
-                'youtube_video_id' => 'L_jWHffIx5E', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=L_jWHffIx5E',
+                'youtube_video_id' => 'LfNwZjWGzhU', // ID YouTube valide pour test
+                'youtube_original_url' => 'https://www.youtube.com/watch?v=LfNwZjWGzhU',
                 'start_time' => 0,
                 'end_time' => 90,
                 'trailer_duration' => 90,
@@ -121,8 +121,8 @@ class VideoTrailerSeeder extends Seeder
                     'en' => 'Authentic accounts of disciples about their spiritual journey in the Mouride way.',
                     'ar' => 'حسابات أصلية للمريدين حول رحلتهم الروحية في الطريقة المريدية'
                 ],
-                'youtube_video_id' => 'kJQP7kiw5Fk', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+                'youtube_video_id' => 'rcSxaJ6peLk', // ID YouTube valide pour test
+                'youtube_original_url' => 'https://www.youtube.com/watch?v=rcSxaJ6peLk',
                 'start_time' => 0,
                 'end_time' => 120,
                 'trailer_duration' => 120,
