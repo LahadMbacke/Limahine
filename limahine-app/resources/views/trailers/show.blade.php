@@ -18,9 +18,9 @@
         <!-- Breadcrumb -->
         <nav class="mb-6">
             <ol class="flex items-center space-x-2 text-sm text-gray-500">
-                <li><a href="{{ route('home') }}" class="hover:text-green-600">{{ __('Accueil') }}</a></li>
+                <li><a href="{{ route('home') }}" class="hover:text-green-600">{{ is_array(__('Accueil')) ? 'Accueil' : __('Accueil') }}</a></li>
                 <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('trailers.index') }}" class="hover:text-green-600">{{ __('Trailers') }}</a></li>
+                <li><a href="{{ route('trailers.index') }}" class="hover:text-green-600">{{ is_array(__('Trailers')) ? 'Trailers' : __('Trailers') }}</a></li>
                 <li><span class="mx-2">/</span></li>
                 <li class="text-gray-900 font-medium">{{ $trailer->getTranslation('title', app()->getLocale()) }}</li>
             </ol>
@@ -57,7 +57,7 @@
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                                 </svg>
-                                {{ __('Durée :') }} {{ $trailer->formatted_duration }}
+                                {{ is_array(__('Durée :')) ? 'Durée :' : __('Durée :') }} {{ $trailer->formatted_duration }}
                             </span>
 
                             @if($trailer->category)
@@ -68,7 +68,7 @@
 
                             @if($trailer->featured)
                                 <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
-                                    {{ __('En vedette') }}
+                                    {{ is_array(__('En vedette')) ? 'En vedette' : __('En vedette') }}
                                 </span>
                             @endif
                         </div>
@@ -78,7 +78,7 @@
                 <!-- Description -->
                 @if($trailer->getTranslation('description', app()->getLocale()))
                     <div class="mb-8">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Description') }}</h2>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ is_array(__('Description')) ? 'Description' : __('Description') }}</h2>
                         <div class="prose prose-green max-w-none">
                             <p class="text-gray-700 leading-relaxed">
                                 {{ $trailer->getTranslation('description', app()->getLocale()) }}
