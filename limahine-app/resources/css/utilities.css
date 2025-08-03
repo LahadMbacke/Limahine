@@ -1,0 +1,432 @@
+/**
+ * Utilitaires CSS avancés pour Limahine App
+ * Animations, effets et classes d'aide supplémentaires
+ */
+
+/* Anti-FOUC et Performance */
+.anti-fouc {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.content-loaded {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Optimisation du rendu critique */
+.critical-render {
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Animations personnalisées avancées */
+@layer utilities {
+  /* Effet de typewriter */
+  .typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typewriter 3s steps(30, end), blink-cursor 0.5s step-end infinite alternate;
+  }
+
+  @keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink-cursor {
+    50% { border-right-color: transparent; }
+  }
+
+  /* Effet de révélation de texte */
+  .reveal-text {
+    background: linear-gradient(90deg, transparent 0%, transparent 100%);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    animation: reveal-text 1.5s ease-in-out forwards;
+  }
+
+  @keyframes reveal-text {
+    to {
+      background-size: 100% 100%;
+    }
+  }
+
+  /* Effet de morphing */
+  .morph {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .morph:hover {
+    transform: perspective(1000px) rotateX(10deg) rotateY(10deg);
+  }
+
+  /* Effet de particules flottantes */
+  .floating-particles::before,
+  .floating-particles::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(232, 183, 58, 0.6);
+    border-radius: 50%;
+    animation: float-particles 6s ease-in-out infinite;
+  }
+
+  .floating-particles::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: -2s;
+  }
+
+  .floating-particles::after {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: -4s;
+  }
+
+  @keyframes float-particles {
+    0%, 100% {
+      transform: translateY(0px) scale(1);
+      opacity: 0.7;
+    }
+    33% {
+      transform: translateY(-20px) scale(1.1);
+      opacity: 1;
+    }
+    66% {
+      transform: translateY(10px) scale(0.9);
+      opacity: 0.8;
+    }
+  }
+
+  /* Effet de brillance */
+  .shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s;
+  }
+
+  .shine:hover::before {
+    left: 100%;
+  }
+
+  /* Effet de pulsation */
+  .pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
+
+  @keyframes pulse-glow {
+    0% {
+      box-shadow: 0 0 5px rgba(232, 183, 58, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(232, 183, 58, 0.6), 0 0 30px rgba(232, 183, 58, 0.4);
+    }
+    100% {
+      box-shadow: 0 0 5px rgba(232, 183, 58, 0.3);
+    }
+  }
+
+  /* Effet de zoom progressif */
+  .zoom-in-out {
+    animation: zoom-in-out 4s ease-in-out infinite;
+  }
+
+  @keyframes zoom-in-out {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Effet de rotation continue */
+  .rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Effet de balancement */
+  .swing {
+    animation: swing 2s ease-in-out infinite;
+    transform-origin: top center;
+  }
+
+  @keyframes swing {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(3deg);
+    }
+    75% {
+      transform: rotate(-3deg);
+    }
+  }
+
+  /* Effet de rebond */
+  .bounce-in {
+    animation: bounce-in 1s ease-out;
+  }
+
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.3) translateY(-50px);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05) translateY(0);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Effet de glissement depuis les côtés */
+  .slide-in-left {
+    animation: slide-in-left 0.8s ease-out;
+  }
+
+  .slide-in-right {
+    animation: slide-in-right 0.8s ease-out;
+  }
+
+  @keyframes slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Effet de fondu avec rotation */
+  .fade-in-rotate {
+    animation: fade-in-rotate 1s ease-out;
+  }
+
+  @keyframes fade-in-rotate {
+    from {
+      opacity: 0;
+      transform: rotate(-10deg) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+
+  /* Effet de texte en mouvement */
+  .text-wave {
+    animation: text-wave 2s ease-in-out infinite;
+  }
+
+  @keyframes text-wave {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-5px);
+    }
+    75% {
+      transform: translateY(5px);
+    }
+  }
+
+  /* Effet de dégradé animé */
+  .gradient-animation {
+    background: linear-gradient(-45deg, #f1d067, #e8b73a, #9d7b6a, #6d5650);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+  }
+
+  @keyframes gradient-animation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Classes utilitaires pour les interactions */
+  .hover-scale-110:hover {
+    transform: scale(1.1);
+  }
+
+  .hover-scale-105:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-rotate-12:hover {
+    transform: rotate(12deg);
+  }
+
+  .hover-skew-12:hover {
+    transform: skewX(12deg);
+  }
+
+  /* Effets de bordure animée */
+  .border-gradient {
+    position: relative;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(45deg, #f1d067, #e8b73a, #9d7b6a) border-box;
+    border: 2px solid transparent;
+  }
+
+  .border-gradient-animation {
+    position: relative;
+    background: white;
+  }
+
+  .border-gradient-animation::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(45deg, #f1d067, #e8b73a, #9d7b6a);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    animation: gradient-animation 3s ease infinite;
+  }
+
+  /* États de chargement */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Effets de focus améliorés */
+  .focus-ring-golden:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(232, 183, 58, 0.3);
+  }
+
+  .focus-ring-brown:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(157, 123, 106, 0.3);
+  }
+
+  /* Effet de survol sur les liens */
+  .link-underline {
+    position: relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f1d067, #e8b73a);
+    transition: width 0.3s ease;
+  }
+
+  .link-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Masques et filtres */
+  .mask-gradient {
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  }
+
+  .filter-golden {
+    filter: sepia(1) hue-rotate(35deg) saturate(1.5) brightness(1.1);
+  }
+
+  /* Classes responsives personnalisées */
+  @media (max-width: 640px) {
+    .mobile-hidden {
+      display: none;
+    }
+
+    .mobile-full {
+      width: 100%;
+    }
+
+    .mobile-center {
+      text-align: center;
+    }
+  }
+
+  /* États d'accessibilité */
+  @media (prefers-reduced-motion: reduce) {
+    .reduce-motion {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Mode sombre (pour futur développement) */
+  @media (prefers-color-scheme: dark) {
+    .dark-mode-invert {
+      filter: invert(1) hue-rotate(180deg);
+    }
+  }
+}
+
+/* Classes de débogage (à retirer en production) */
+@layer utilities {
+  .debug-border {
+    border: 1px solid red !important;
+  }
+
+  .debug-bg {
+    background-color: rgba(255, 0, 0, 0.1) !important;
+  }
+}

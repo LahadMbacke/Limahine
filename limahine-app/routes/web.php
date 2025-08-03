@@ -2,53 +2,48 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use Illuminate\Http\Request; // Assurez-vous d'importer cette classe en haut du fichier
-
+use App\Http\Controllers\LanguageController;
+use Illuminate\Http\Request;
 use App\Models\PostArticles;
 
+// Routes pour la gestion des langues
+Route::post('/language/switch', [LanguageController::class, 'switch'])->name('language.switch');
+Route::get('/language/current', [LanguageController::class, 'current'])->name('language.current');
 
-Route::get('/', HomeController::class . '@index');
+// Route pour la page d'accueil
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/biography', HomeController::class . '@biography');
+// Routes pour les pages principales
+Route::get('/bibliographie', [HomeController::class, 'biography'])->name('biography');
+Route::get('/publications', [HomeController::class, 'writing'])->name('writing');
+Route::get('/philosophie', [HomeController::class, 'philosophy'])->name('philosophy');
+Route::get('/temoignages', [HomeController::class, 'testimonials'])->name('testimonials');
+Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheurs');
 
-Route::get('/writing', HomeController::class . '@writing');
-Route::get('/philosophy', HomeController::class . '@philosophy');
-Route::get('/testimonials', HomeController::class . '@testimonials');
-Route::get('/chercheurs', HomeController::class . '@chercheurs');
+// Routes pour les publications individuelles
+Route::get('/publications/{publication:slug}', [HomeController::class, 'showPublication'])->name('publications.show');
 
+// Maintenir les anciennes routes pour compatibilité
+Route::get('/biography', [HomeController::class, 'biography']);
+Route::get('/writing', [HomeController::class, 'writing']);
 
-Route::get('/admin', function () {
+// Route pour l'administration (ancienne - sera remplacée par Filament)
+Route::get('/admin-old', function () {
     $posts = PostArticles::all();
     return view('admin', compact('posts'));
-});
+})->name('admin.old');
 
-Route::get('/', function () {
-    $posts = PostArticles::where('is_published', true)->latest()->take(3)->get(); // Récupérer les 3 derniers articles publiés
-    return view('welcome', compact('posts')); // Transmettre $posts à la vue
-});
-
+// Routes pour l'ancien système de posts (compatibilité)
 Route::post('/admin/posts', function (Request $request) {
     PostArticles::create($request->all());
-    return redirect('/admin');
-});
+    return redirect('/admin-old');
+})->name('admin.posts.store');
 
 Route::patch('/admin/posts/{id}/publish', function ($id) {
     $post = PostArticles::findOrFail($id);
     $post->update(['is_published' => true]);
-    return redirect('/admin');
-});
-
-
-// Route::get('/', function () {
-//     $posts = Post::where('is_published', true)->latest()->take(3)->get();
-//     return view('welcome', compact('posts'));
-// });
-
-
-
-// Route::get('/philosophy', function () {
-//     return view('philosophy');
-// });
+    return redirect('/admin-old');
+})->name('admin.posts.publish');
 
 // Route::get('/testimonials', function () {
 //     return view('testimonials');
