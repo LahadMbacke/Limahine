@@ -208,13 +208,13 @@
     </section>
     @endif
 
-    {{-- Trailers Vidéo en Vedette --}}
+    {{-- Vidéo en Vedette --}}
     @if($featuredTrailers->count() > 0)
     <section class="py-20 bg-gradient-to-br from-red-50 to-pink-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-red-900 mb-6">
-                    Trailers Vidéo
+                    Vidéo
                 </h2>
                 <p class="text-xl text-red-700 max-w-3xl mx-auto">
                     Découvrez des extraits de nos enseignements vidéo sur la chaîne YouTube Limahine TV

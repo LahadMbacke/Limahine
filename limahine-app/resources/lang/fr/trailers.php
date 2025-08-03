@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'trailers' => 'Trailers Vidéo',
-    'video_trailers' => 'Trailers Vidéo',
+    'trailers' => 'Vidéo',
+    'video_trailers' => 'Vidéo',
     'featured_trailers' => 'Trailers en Vedette',
     'all_trailers' => 'Tous les Trailers',
     'watch_trailer' => 'Regarder',

@@ -110,7 +110,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
-                        <span class="text-sm font-medium">Trailers Vidéo</span>
+                        <span class="text-sm font-medium">Vidéo</span>
                     </a>
                     <a href="{{ route('chercheurs') }}" class="nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
-                        Trailers Vidéo
+                        Vidéo
                     </a>
                     <a href="{{ route('chercheurs') }}" class="mobile-nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +294,7 @@
                         <li><a href="{{ route('home') }}" class="footer-link">Accueil</a></li>
                         <li><a href="{{ route('philosophy') }}" class="footer-link">Philosophie</a></li>
                         <li><a href="{{ route('writing') }}" class="footer-link">Publications</a></li>
-                        <li><a href="{{ route('trailers.index') }}" class="footer-link">Trailers Vidéo</a></li>
+                        <li><a href="{{ route('trailers.index') }}" class="footer-link">Vidéo</a></li>
                         <li><a href="{{ route('biography') }}" class="footer-link">Biographie</a></li>
                     </ul>
                 </div>

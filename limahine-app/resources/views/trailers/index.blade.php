@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Trailers Vidéo - Enseignements de Cheikh Ahmadou Bamba'))
+@section('title', __('Vidéo - Enseignements de Cheikh Ahmadou Bamba'))
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <h1 class="text-4xl font-bold text-gray-900 mb-4">
-                    {{ __('Trailers Vidéo') }}
+                    {{ __('Vidéo') }}
                 </h1>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
                     {{ __('Découvrez des extraits de nos enseignements vidéo sur la chaîne YouTube Limahine TV. Chaque trailer vous donne un aperçu des précieux enseignements de Cheikh Ahmadou Bamba.') }}

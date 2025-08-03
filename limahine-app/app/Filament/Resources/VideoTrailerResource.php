@@ -34,11 +34,11 @@ class VideoTrailerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
 
-    protected static ?string $navigationLabel = 'Trailers Vidéo';
+    protected static ?string $navigationLabel = 'Vidéo';
 
     protected static ?string $modelLabel = 'Trailer Vidéo';
 
-    protected static ?string $pluralModelLabel = 'Trailers Vidéo';
+    protected static ?string $pluralModelLabel = 'Vidéo';
 
     protected static ?string $navigationGroup = 'Contenu Multimédia';
 

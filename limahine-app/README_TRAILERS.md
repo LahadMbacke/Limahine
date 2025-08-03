@@ -1,8 +1,8 @@
-# Fonctionnalité Trailers Vidéo - Limahine
+# Fonctionnalité Vidéo - Limahine
 
 ## Vue d'ensemble
 
-Cette fonctionnalité permet de gérer et afficher des trailers vidéo YouTube sur la plateforme Limahine. Elle s'intègre parfaitement avec l'écosystème existant et offre une interface complète pour la gestion des contenus vidéo.
+Cette fonctionnalité permet de gérer et afficher des Vidéo YouTube sur la plateforme Limahine. Elle s'intègre parfaitement avec l'écosystème existant et offre une interface complète pour la gestion des contenus vidéo.
 
 ## Composants créés
 

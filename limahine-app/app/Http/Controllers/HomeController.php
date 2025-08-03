@@ -27,7 +27,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        // Trailers vidéo en vedette
+        // Vidéo en vedette
         $featuredTrailers = VideoTrailer::published()
             ->featured()
             ->latest('published_at')

@@ -46,7 +46,7 @@ Route::patch('/admin/posts/{id}/publish', function ($id) {
     return redirect('/admin-old');
 })->name('admin.posts.publish');
 
-// Routes pour les trailers vidéo
+// Routes pour les Vidéo
 Route::get('/trailers', [VideoTrailerController::class, 'index'])->name('trailers.index');
 Route::get('/trailers/{slug}', [VideoTrailerController::class, 'show'])->name('trailers.show');
 Route::get('/api/trailers', [VideoTrailerController::class, 'api'])->name('trailers.api');
