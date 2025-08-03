@@ -208,6 +208,109 @@
     </section>
     @endif
 
+    {{-- Trailers Vidéo en Vedette --}}
+    @if($featuredTrailers->count() > 0)
+    <section class="py-20 bg-gradient-to-br from-red-50 to-pink-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-red-900 mb-6">
+                    Trailers Vidéo
+                </h2>
+                <p class="text-xl text-red-700 max-w-3xl mx-auto">
+                    Découvrez des extraits de nos enseignements vidéo sur la chaîne YouTube Limahine TV
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @foreach($featuredTrailers as $trailer)
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="relative group">
+                        <img src="{{ $trailer->youtube_thumbnail }}"
+                             alt="{{ $trailer->getTranslation('title', app()->getLocale()) }}"
+                             class="w-full h-48 object-cover">
+
+                        <!-- Overlay avec bouton play -->
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <a href="{{ route('trailers.show', $trailer->slug) }}"
+                               class="bg-red-600 text-white rounded-full p-4 hover:bg-red-700 transition-colors">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M8 5v10l7-5z"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Badge durée -->
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm">
+                            {{ $trailer->formatted_duration }}
+                        </div>
+
+                        <!-- Badge catégorie -->
+                        @if($trailer->category)
+                        <div class="absolute top-2 left-2">
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-3 py-1 rounded-full">
+                                {{ ucfirst($trailer->category) }}
+                            </span>
+                        </div>
+                        @endif
+
+                        <!-- Badge en vedette -->
+                        @if($trailer->featured)
+                        <div class="absolute top-2 right-2">
+                            <span class="bg-yellow-500 text-white text-xs font-medium px-2 py-1 rounded">
+                                ⭐ En vedette
+                            </span>
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-red-900 mb-3 line-clamp-2">
+                            {{ $trailer->getTranslation('title', app()->getLocale()) }}
+                        </h3>
+
+                        @if($trailer->getTranslation('description', app()->getLocale()))
+                        <p class="text-red-700 mb-4 line-clamp-3">
+                            {{ Str::limit($trailer->getTranslation('description', app()->getLocale()), 120) }}
+                        </p>
+                        @endif
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-sm text-red-600">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                                YouTube
+                            </div>
+                            <a href="{{ route('trailers.show', $trailer->slug) }}"
+                               class="text-red-600 hover:text-red-800 font-medium">
+                                Regarder →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <div class="text-center mt-12">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ route('trailers.index') }}"
+                       class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium transition-colors">
+                        Voir tous les trailers
+                    </a>
+                    <a href="https://www.youtube.com/@limaahinetv2949"
+                       target="_blank"
+                       class="bg-gray-100 hover:bg-gray-200 text-red-600 px-8 py-3 rounded-full font-medium transition-colors flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        Chaîne YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- Thématiques Principales --}}
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6">

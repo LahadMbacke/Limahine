@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\VideoTrailerController;
 use Illuminate\Http\Request;
 use App\Models\PostArticles;
 
@@ -44,6 +45,11 @@ Route::patch('/admin/posts/{id}/publish', function ($id) {
     $post->update(['is_published' => true]);
     return redirect('/admin-old');
 })->name('admin.posts.publish');
+
+// Routes pour les trailers vidéo
+Route::get('/trailers', [VideoTrailerController::class, 'index'])->name('trailers.index');
+Route::get('/trailers/{slug}', [VideoTrailerController::class, 'show'])->name('trailers.show');
+Route::get('/api/trailers', [VideoTrailerController::class, 'api'])->name('trailers.api');
 
 // Route::get('/testimonials', function () {
 //     return view('testimonials');

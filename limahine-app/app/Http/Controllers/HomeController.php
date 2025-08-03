@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Publication;
 use App\Models\Temoignage;
 use App\Models\Bibliographie;
+use App\Models\VideoTrailer;
 use App\Models\Page;
 
 class HomeController extends Controller
@@ -26,14 +27,22 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
+        // Trailers vidéo en vedette
+        $featuredTrailers = VideoTrailer::published()
+            ->featured()
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
         // Statistiques pour la page d'accueil
         $stats = [
             'publications' => Publication::published()->count(),
             'temoignages' => Temoignage::published()->verified()->count(),
             'bibliographies' => Bibliographie::published()->count(),
+            'trailers' => VideoTrailer::published()->count(),
         ];
 
-        return view('home-new', compact('featuredPublications', 'featuredTestimonials', 'stats'));
+        return view('home-new', compact('featuredPublications', 'featuredTestimonials', 'featuredTrailers', 'stats'));
     }
 
     public function biography()

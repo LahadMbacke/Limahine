@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Définir la locale par défaut depuis la session ou le config
+        if (Session::has('locale')) {
+            App::setLocale(Session::get('locale'));
+        } else {
+            App::setLocale(config('app.locale', 'fr'));
+        }
     }
 }
