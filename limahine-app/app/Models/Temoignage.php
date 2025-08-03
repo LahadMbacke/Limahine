@@ -74,4 +74,28 @@ class Temoignage extends Model implements HasMedia
         $this->addMediaCollection('audio')
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
     }
+
+    // Helper methods pour les traductions
+    public function getLocalizedTitle()
+    {
+        return $this->getTranslation('title', app()->getLocale())
+            ?: $this->getTranslation('title', 'fr')
+            ?: $this->getTranslation('title', 'en');
+    }
+
+    public function getLocalizedContent()
+    {
+        return $this->getTranslation('content', app()->getLocale())
+            ?: $this->getTranslation('content', 'fr')
+            ?: $this->getTranslation('content', 'en');
+    }
+
+    public function getLocalizedAuthorTitle()
+    {
+        return $this->getTranslation('author_title', app()->getLocale())
+            ?: $this->getTranslation('author_title', 'fr')
+            ?: $this->getTranslation('author_title', 'en');
+    }
+
+    // Relations
 }

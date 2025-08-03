@@ -89,6 +89,28 @@ class Bibliographie extends Model implements HasMedia
         return $query->where('featured', true);
     }
 
+    // Helper methods pour les traductions
+    public function getLocalizedTitle()
+    {
+        return $this->getTranslation('title', app()->getLocale())
+            ?: $this->getTranslation('title', 'fr')
+            ?: $this->getTranslation('title', 'en');
+    }
+
+    public function getLocalizedDescription()
+    {
+        return $this->getTranslation('description', app()->getLocale())
+            ?: $this->getTranslation('description', 'fr')
+            ?: $this->getTranslation('description', 'en');
+    }
+
+    public function getLocalizedAuthorName()
+    {
+        return $this->getTranslation('author_name', app()->getLocale())
+            ?: $this->getTranslation('author_name', 'fr')
+            ?: $this->getTranslation('author_name', 'en');
+    }
+
     // Collections de médias
     public function registerMediaCollections(): void
     {

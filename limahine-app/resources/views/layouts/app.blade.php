@@ -72,33 +72,97 @@
     </div>
 
     <!-- Navigation Header -->
-    <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-transparent">
-        <nav class="container-custom">
-            <div class="flex items-center justify-between h-16 md:h-20">
+    <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/95 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14 md:h-16 lg:h-18">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                        <img src="{{ asset('assets/unnamed.jpg') }}" alt="Limahine Logo" class="h-10 w-10 md:h-12 md:w-12 rounded-full shadow-golden">
-                        <span class="text-xl md:text-2xl font-elegant font-bold text-gradient">Limahine</span>
+                        <img src="{{ asset('assets/unnamed.jpg') }}" alt="Limahine Logo" class="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 rounded-full shadow-md">
+                        <div class="flex flex-col">
+                            <span class="text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Limahine</span>
+                            <span class="text-xs md:text-sm text-amber-600 hidden md:block">التعليم الروحي</span>
+                        </div>
                     </a>
                 </div>
 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Accueil</a>
-                    <a href="{{ route('philosophy') }}" class="nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">Philosophie</a>
-                    <a href="{{ route('writing') }}" class="nav-link {{ request()->routeIs('writing') ? 'active' : '' }}">Publications</a>
-                    <a href="{{ route('chercheurs') }}" class="nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">Chercheurs</a>
-                    <a href="{{ route('biography') }}" class="nav-link {{ request()->routeIs('biography') ? 'active' : '' }}">Biographie</a>
-                    <a href="{{ route('testimonials') }}" class="nav-link {{ request()->routeIs('testimonials') ? 'active' : '' }}">Témoignages</a>
+                <div class="hidden lg:flex items-center space-x-2 xl:space-x-4">
+                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Accueil</span>
+                    </a>
+                    <a href="{{ route('philosophy') }}" class="nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 12v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Philosophie</span>
+                    </a>
+                    <a href="{{ route('writing') }}" class="nav-link {{ request()->routeIs('writing') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Publications</span>
+                    </a>
+                    <a href="{{ route('chercheurs') }}" class="nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Chercheurs</span>
+                    </a>
+                    <a href="{{ route('biography') }}" class="nav-link {{ request()->routeIs('biography') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Bibliographie</span>
+                    </a>
+                    <a href="{{ route('testimonials') }}" class="nav-link {{ request()->routeIs('testimonials') ? 'active' : '' }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Témoignages</span>
+                    </a>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
+                <!-- Language Selector & Mobile Menu -->
+                <div class="flex items-center space-x-3">
+                    <!-- Language Selector -->
+                    <div class="relative hidden md:block">
+                        <button id="language-button" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                            </svg>
+                            <span class="font-medium">{{ strtoupper(app()->getLocale()) }}</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        <div id="language-dropdown" class="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                            <div class="py-1">
+                                <a href="#" onclick="switchLanguage('fr')" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                    <span class="mr-3">🇫🇷</span>
+                                    Français
+                                </a>
+                                <a href="#" onclick="switchLanguage('en')" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                    <span class="mr-3">🇬🇧</span>
+                                    English
+                                </a>
+                                <a href="#" onclick="switchLanguage('ar')" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                    <span class="mr-3">🇸🇦</span>
+                                    العربية
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
                     <button
                         type="button"
                         id="mobile-menu-button"
-                        class="text-accent-700 hover:text-primary-500 focus:outline-none focus:text-primary-500 transition-colors"
+                        class="lg:hidden text-amber-700 hover:text-amber-900 focus:outline-none focus:text-amber-900 transition-colors p-2"
                         aria-label="Menu"
                     >
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,20 +174,66 @@
 
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="md:hidden hidden">
-                <div class="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-sm rounded-xl mt-2 shadow-golden border border-primary-100">
-                    <a href="{{ route('home') }}" class="mobile-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Accueil</a>
-                    <a href="{{ route('philosophy') }}" class="mobile-nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">Philosophie</a>
-                    <a href="{{ route('writing') }}" class="mobile-nav-link {{ request()->routeIs('writing') ? 'active' : '' }}">Publications</a>
-                    <a href="{{ route('chercheurs') }}" class="mobile-nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">Chercheurs</a>
-                    <a href="{{ route('biography') }}" class="mobile-nav-link {{ request()->routeIs('biography') ? 'active' : '' }}">Biographie</a>
-                    <a href="{{ route('testimonials') }}" class="mobile-nav-link {{ request()->routeIs('testimonials') ? 'active' : '' }}">Témoignages</a>
+                <div class="px-4 pt-4 pb-6 space-y-2 bg-white/95 backdrop-blur-sm rounded-xl mt-3 shadow-lg border border-amber-100">
+                    <a href="{{ route('home') }}" class="mobile-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Accueil
+                    </a>
+                    <a href="{{ route('philosophy') }}" class="mobile-nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 12v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        Philosophie
+                    </a>
+                    <a href="{{ route('writing') }}" class="mobile-nav-link {{ request()->routeIs('writing') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        Publications
+                    </a>
+                    <a href="{{ route('chercheurs') }}" class="mobile-nav-link {{ request()->routeIs('chercheurs') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Chercheurs
+                    </a>
+                    <a href="{{ route('biography') }}" class="mobile-nav-link {{ request()->routeIs('biography') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        Bibliographie
+                    </a>
+                    <a href="{{ route('testimonials') }}" class="mobile-nav-link {{ request()->routeIs('testimonials') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        Témoignages
+                    </a>
+
+                    <!-- Mobile Language Selector -->
+                    <div class="pt-3 border-t border-amber-100">
+                        <div class="text-xs font-semibold text-amber-700 mb-2 px-2">Langues :</div>
+                        <div class="flex space-x-2">
+                            <button onclick="switchLanguage('fr')" class="flex items-center px-3 py-2 text-sm bg-amber-50 text-amber-800 rounded-lg hover:bg-amber-100">
+                                🇫🇷 FR
+                            </button>
+                            <button onclick="switchLanguage('en')" class="flex items-center px-3 py-2 text-sm bg-amber-50 text-amber-800 rounded-lg hover:bg-amber-100">
+                                🇬🇧 EN
+                            </button>
+                            <button onclick="switchLanguage('ar')" class="flex items-center px-3 py-2 text-sm bg-amber-50 text-amber-800 rounded-lg hover:bg-amber-100">
+                                🇸🇦 AR
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
     <!-- Main Content -->
-    <main class="relative">
+    <main class="relative pt-14 md:pt-16 lg:pt-18">
         @yield('content')
     </main>
 
@@ -237,8 +347,53 @@
                 mobileMenuButton.addEventListener('click', function() {
                     mobileMenu.classList.toggle('hidden');
                 });
+
+                // Fermer le menu mobile quand on clique sur un lien
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Language dropdown toggle
+            const languageButton = document.getElementById('language-button');
+            const languageDropdown = document.getElementById('language-dropdown');
+
+            if (languageButton && languageDropdown) {
+                languageButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    languageDropdown.classList.toggle('hidden');
+                });
+
+                // Fermer le dropdown quand on clique ailleurs
+                document.addEventListener('click', function() {
+                    languageDropdown.classList.add('hidden');
+                });
             }
         });
+
+        // Fonction switchLanguage pour les boutons de langue
+        window.switchLanguage = function(locale) {
+            fetch('/language/switch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ locale })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du changement de langue:', error);
+            });
+        };
 
         // Scroll header effect
         window.addEventListener('scroll', function() {
@@ -254,3 +409,4 @@
     </script>
 </body>
 </html>
+

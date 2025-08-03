@@ -26,10 +26,10 @@
                 @foreach($featuredTemoignages as $featured)
                     <div class="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-2xl p-6 border border-primary-200">
                         <h3 class="text-xl font-elegant font-semibold text-accent-900 mb-3">
-                            {{ $featured->title[app()->getLocale()] ?? $featured->title['fr'] ?? 'Témoignage' }}
+                            {{ $1->getLocalizedTitle() ?? 'Témoignage' }}
                         </h3>
                         <p class="text-accent-700 mb-4 leading-relaxed">
-                            {{ Str::limit(strip_tags($featured->content[app()->getLocale()] ?? $featured->content['fr'] ?? ''), 120) }}
+                            {{ Str::limit(strip_tags(featured->getLocalizedContent() ?? ''), 120) }}
                         </p>
                         <div class="text-sm text-accent-600">
                             <p class="font-semibold">{{ $featured->author_name }}</p>
@@ -66,12 +66,12 @@
 
                     {{-- Titre --}}
                     <h3 class="text-xl font-elegant font-semibold text-accent-900 mb-3">
-                        {{ $temoignage->title[app()->getLocale()] ?? $temoignage->title['fr'] ?? 'Témoignage' }}
+                        {{ $1->getLocalizedTitle() ?? 'Témoignage' }}
                     </h3>
 
                     {{-- Extrait du contenu --}}
                     <p class="text-accent-700 mb-4 leading-relaxed">
-                        {{ Str::limit(strip_tags($temoignage->content[app()->getLocale()] ?? $temoignage->content['fr'] ?? ''), 150) }}
+                        {{ Str::limit(strip_tags(temoignage->getLocalizedContent() ?? ''), 150) }}
                     </p>
 
                     {{-- Informations sur l'auteur --}}
@@ -79,9 +79,9 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="font-semibold text-accent-900">{{ $temoignage->author_name }}</p>
-                                @if(isset($temoignage->author_title[app()->getLocale()]) && $temoignage->author_title[app()->getLocale()])
+                                @if(isset(temoignage->getLocalizedAuthorTitle()) && temoignage->getLocalizedAuthorTitle())
                                     <p class="text-sm text-accent-600">
-                                        {{ $temoignage->author_title[app()->getLocale()] }}
+                                        {{ $1->getLocalizedAuthorTitle() }}
                                     </p>
                                 @endif
                             </div>
@@ -117,3 +117,4 @@
         @endif
     </x-section>
 @endsection
+

@@ -26,7 +26,8 @@ class Publication extends Model implements HasMedia
         'meta_description',
         'author_id',
         'reading_time',
-        'tags'
+        'tags',
+        'featured'
     ];
 
     protected $translatable = [
@@ -39,7 +40,8 @@ class Publication extends Model implements HasMedia
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
-        'tags' => 'array'
+        'tags' => 'array',
+        'featured' => 'boolean'
     ];
 
     // Relations
@@ -77,6 +79,28 @@ class Publication extends Model implements HasMedia
             'histoire' => 'Histoire',
             'temoignages' => 'Témoignages'
         ];
+    }
+
+    // Helper methods pour les traductions
+    public function getLocalizedTitle()
+    {
+        return $this->getTranslation('title', app()->getLocale())
+            ?: $this->getTranslation('title', 'fr')
+            ?: $this->getTranslation('title', 'en');
+    }
+
+    public function getLocalizedContent()
+    {
+        return $this->getTranslation('content', app()->getLocale())
+            ?: $this->getTranslation('content', 'fr')
+            ?: $this->getTranslation('content', 'en');
+    }
+
+    public function getLocalizedExcerpt()
+    {
+        return $this->getTranslation('excerpt', app()->getLocale())
+            ?: $this->getTranslation('excerpt', 'fr')
+            ?: $this->getTranslation('excerpt', 'en');
     }
 
     // Collections de médias

@@ -12,50 +12,121 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $publications = Publication::published()
-            ->latest('published_at')
-            ->take(6)
-            ->get();
-
-        $featuredPublication = Publication::published()
+        // Publications vedettes
+        $featuredPublications = Publication::published()
             ->featured()
             ->latest('published_at')
-            ->first();
+            ->take(3)
+            ->get();
 
-        $temoignages = Temoignage::published()
+        // Témoignages vedettes
+        $featuredTestimonials = Temoignage::published()
             ->verified()
             ->featured()
             ->take(3)
             ->get();
 
-        return view('welcome', compact('publications', 'featuredPublication', 'temoignages'));
+        // Statistiques pour la page d'accueil
+        $stats = [
+            'publications' => Publication::published()->count(),
+            'temoignages' => Temoignage::published()->verified()->count(),
+            'bibliographies' => Bibliographie::published()->count(),
+        ];
+
+        return view('home-new', compact('featuredPublications', 'featuredTestimonials', 'stats'));
     }
 
     public function biography()
     {
-        $bibliographies = Bibliographie::published()
-            ->byCategory('cheikh_ahmadou_bamba')
-            ->featured()
-            ->take(6)
-            ->get();
+        $query = Bibliographie::published()->latest();
 
-        return view('biography', compact('bibliographies'));
+        // Filtrage par catégorie
+        if (request('category')) {
+            $query->byCategory(request('category'));
+        }
+
+        // Filtrage par type
+        if (request('type')) {
+            $query->byType(request('type'));
+        }
+
+        // Recherche textuelle
+        if (request('search')) {
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereJsonContains('title->fr', $searchTerm)
+                  ->orWhereJsonContains('title->en', $searchTerm)
+                  ->orWhereJsonContains('title->ar', $searchTerm)
+                  ->orWhereJsonContains('author_name->fr', $searchTerm)
+                  ->orWhereJsonContains('author_name->en', $searchTerm)
+                  ->orWhereJsonContains('author_name->ar', $searchTerm)
+                  ->orWhereJsonContains('description->fr', $searchTerm)
+                  ->orWhereJsonContains('description->en', $searchTerm)
+                  ->orWhereJsonContains('description->ar', $searchTerm);
+            });
+        }
+
+        $bibliographies = $query->paginate(16);
+        $categories = Bibliographie::getCategories();
+        $types = Bibliographie::getTypes();
+
+        // Ouvrages vedettes (uniquement si pas de filtre)
+        $featuredBibliographies = collect();
+        if (!request('category') && !request('search') && !request('type')) {
+            $featuredBibliographies = Bibliographie::published()
+                ->featured()
+                ->take(6)
+                ->get();
+        }
+
+        // Statistiques par catégorie
+        $stats = [];
+        foreach ($categories as $key => $label) {
+            $stats[$key] = Bibliographie::published()->byCategory($key)->count();
+        }
+
+        return view('bibliography-new', compact('bibliographies', 'categories', 'types', 'featuredBibliographies', 'stats'));
     }
 
     public function writing()
     {
-        $publications = Publication::published()
-            ->latest('published_at')
-            ->paginate(12);
+        $query = Publication::published()->latest('published_at');
 
+        // Filtrage par catégorie
+        if (request('category')) {
+            $query->byCategory(request('category'));
+        }
+
+        // Recherche textuelle
+        if (request('search')) {
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereJsonContains('title->fr', $searchTerm)
+                  ->orWhereJsonContains('title->en', $searchTerm)
+                  ->orWhereJsonContains('title->ar', $searchTerm)
+                  ->orWhereJsonContains('content->fr', $searchTerm)
+                  ->orWhereJsonContains('content->en', $searchTerm)
+                  ->orWhereJsonContains('content->ar', $searchTerm)
+                  ->orWhereJsonContains('excerpt->fr', $searchTerm)
+                  ->orWhereJsonContains('excerpt->en', $searchTerm)
+                  ->orWhereJsonContains('excerpt->ar', $searchTerm)
+                  ->orWhere('tags', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $publications = $query->paginate(12);
         $categories = Publication::getCategories();
 
-        $featuredPublications = Publication::published()
-            ->featured()
-            ->take(3)
-            ->get();
+        // Publications vedettes (uniquement si pas de filtre)
+        $featuredPublications = collect();
+        if (!request('category') && !request('search')) {
+            $featuredPublications = Publication::published()
+                ->featured()
+                ->take(3)
+                ->get();
+        }
 
-        return view('writing', compact('publications', 'categories', 'featuredPublications'));
+        return view('publications-new', compact('publications', 'categories', 'featuredPublications'));
     }
 
     public function philosophy()
@@ -66,9 +137,9 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $page = Page::byType('philosophy')->published()->first();
+        $page = Page::where('page_type', 'philosophy')->published()->first();
 
-        return view('philosophy', compact('philosophyPublications', 'page'));
+        return view('philosophy-new', compact('philosophyPublications', 'page'));
     }
 
     public function testimonials()
@@ -84,7 +155,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('testimonials', compact('temoignages', 'featuredTemoignages'));
+        return view('testimonials-new', compact('temoignages', 'featuredTemoignages'));
     }
 
     public function chercheurs()
@@ -95,13 +166,15 @@ class HomeController extends Controller
             ->paginate(12);
 
         $academicResources = Bibliographie::published()
-            ->byType('these')
-            ->orWhere('type', 'memoire')
-            ->orWhere('type', 'conference')
+            ->where(function($query) {
+                $query->byType('these')
+                      ->orWhere('type', 'memoire')
+                      ->orWhere('type', 'conference');
+            })
             ->take(6)
             ->get();
 
-        return view('chercheurs', compact('bibliographies', 'academicResources'));
+        return view('chercheurs-new', compact('bibliographies', 'academicResources'));
     }
 
     public function publications()

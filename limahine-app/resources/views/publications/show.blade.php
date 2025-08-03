@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', $publication->title[app()->getLocale()] ?? $publication->title['fr'])
-@section('description', $publication->meta_description[app()->getLocale()] ?? $publication->excerpt[app()->getLocale()] ?? '')
+@section('title', $publication->getLocalizedTitle())
+@section('description', $publication->getTranslation('meta_description', app()->getLocale()) ?: $publication->getLocalizedExcerpt())
 
 @section('content')
     {{-- Hero Section pour l'article --}}
@@ -18,12 +18,12 @@
             </div>
 
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-elegant font-bold text-accent-900 mb-6">
-                {{ $publication->title[app()->getLocale()] ?? $publication->title['fr'] }}
+                {{ $publication->getLocalizedTitle() }}
             </h1>
 
-            @if($publication->excerpt[app()->getLocale()] ?? $publication->excerpt['fr'])
+            @if($publication->getLocalizedExcerpt())
                 <p class="text-xl text-accent-700 mb-8 leading-relaxed">
-                    {{ $publication->excerpt[app()->getLocale()] ?? $publication->excerpt['fr'] }}
+                    {{ $publication->getLocalizedExcerpt() }}
                 </p>
             @endif
 
@@ -58,7 +58,7 @@
     <x-section background="white" class="py-16">
         <div class="max-w-4xl mx-auto">
             <article class="prose prose-lg max-w-none">
-                {!! $publication->content[app()->getLocale()] ?? $publication->content['fr'] !!}
+                {!! $publication->getLocalizedContent() !!}
             </article>
 
             {{-- Tags --}}
@@ -86,8 +86,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($relatedPublications as $related)
                     <x-card
-                        :title="$related->title[app()->getLocale()] ?? $related->title['fr']"
-                        :description="$related->excerpt[app()->getLocale()] ?? $related->excerpt['fr']"
+                        :title="$related->getLocalizedTitle()"
+                        :description="$related->getLocalizedExcerpt()"
                         :link="route('publications.show', $related)"
                         :category="\App\Models\Publication::getCategories()[$related->category] ?? $related->category"
                         :date="$related->published_at->format('M Y')"
@@ -120,7 +120,7 @@
                             </svg>
                             <div>
                                 <div class="text-sm text-accent-500">Article précédent</div>
-                                <div class="font-medium">{{ Str::limit($previous->title[app()->getLocale()] ?? $previous->title['fr'], 40) }}</div>
+                                <div class="font-medium">{{ Str::limit($previous->getLocalizedTitle(), 40) }}</div>
                             </div>
                         </a>
                     @endif
@@ -131,7 +131,7 @@
                         <a href="{{ route('publications.show', $next) }}" class="group flex items-center gap-3 justify-end text-accent-700 hover:text-primary-600 transition-colors">
                             <div>
                                 <div class="text-sm text-accent-500">Article suivant</div>
-                                <div class="font-medium">{{ Str::limit($next->title[app()->getLocale()] ?? $next->title['fr'], 40) }}</div>
+                                <div class="font-medium">{{ Str::limit($next->getLocalizedTitle(), 40) }}</div>
                             </div>
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -185,3 +185,4 @@
     }
 </style>
 @endpush
+
