@@ -271,29 +271,11 @@
                 </a>
                 <a href="{{ route('biography') }}"
                    class="border-2 border-white text-white hover:bg-white hover:text-amber-600 px-8 py-3 rounded-full font-semibold transition-colors">
-                    Explorer la Bibliographie
+                    Explorer la Biographie
                 </a>
             </div>
         </div>
     </section>
     @endif
 @endsection
-
-@push('styles')
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
-@endpush
 

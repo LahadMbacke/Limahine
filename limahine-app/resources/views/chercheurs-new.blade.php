@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Chercheurs - Limahine')
-@section('description', 'Espace dédié aux chercheurs, étudiants et passionnés, regroupant des ressources académiques, publications spécialisées et documents d\'analyse sur la pensée de Cheikh Ahmadou Bamba.')
+@section('description', 'Espace dédié aux chercheurs, étudiants et passionnés,            @if($biographies->hasPages())
+            <div class="mt-12 flex justify-center">
+                {{ $biographies->links() }}
+            </div>
+            @endifoupant des ressources académiques, publications spécialisées et documents d\'analyse sur la pensée de Cheikh Ahmadou Bamba.')
 
 @section('content')
     {{-- Header Section --}}
@@ -73,9 +77,9 @@
                 </p>
             </div>
 
-            @if($bibliographies->count() > 0)
+            @if($biographies->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                @foreach($bibliographies as $resource)
+                @foreach($biographies as $resource)
                 <article class="bg-purple-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-purple-100">
                     @if($resource->getFirstMediaUrl('cover'))
                     <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $resource->getFirstMediaUrl('cover') }}')"></div>
@@ -537,32 +541,10 @@
                 </a>
                 <a href="{{ route('biography') }}"
                    class="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 rounded-full font-semibold transition-colors">
-                    Consulter la Bibliographie
+                    Consulter la Biographie
                 </a>
             </div>
         </div>
     </section>
 @endsection
-
-@push('styles')
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-</style>
-@endpush
 

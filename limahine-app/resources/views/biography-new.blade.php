@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Bibliographie - Limahine')
-@section('description', 'Découvrez la bibliographie exhaustive de Cheikh Ahmadou Bamba Mbacké, de ses khalifes et de ses fils, ainsi que leurs contributions spirituelles et sociales.')
+@section('title', 'Biographie - Limahine')
+@section('description', 'Découvrez les biographies exhaustives de Cheikh Ahmadou Bamba Mbacké, de ses khalifes et de ses fils, ainsi que leurs contributions spirituelles et sociales.')
 
 @section('content')
     {{-- Header Section --}}
@@ -9,11 +9,11 @@
         <div class="container mx-auto px-6">
             <div class="text-center max-w-4xl mx-auto">
                 <h1 class="text-4xl md:text-5xl font-bold text-indigo-900 mb-6">
-                    Bibliographie
+                    Biographie
                 </h1>
                 <p class="text-xl text-indigo-700 leading-relaxed mb-8">
-                    Bibliographie exhaustive de Cheikh Ahmadou Bamba Mbacké, de ses khalifes et de ses fils,
-                    présentant leurs ouvrages, contributions spirituelles et impact historique.
+                    Biographies exhaustives de Cheikh Ahmadou Bamba Mbacké, de ses khalifes et de ses fils,
+                    présentant leurs vies, contributions spirituelles et impact historique.
                 </p>
 
                 <!-- Recherche -->
@@ -22,7 +22,7 @@
                         <input type="text"
                                name="search"
                                value="{{ request('search') }}"
-                               placeholder="Rechercher un ouvrage ou auteur..."
+                               placeholder="Rechercher une personnalité..."
                                class="w-full px-4 py-3 pl-12 rounded-full border border-indigo-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none bg-white">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -61,70 +61,68 @@
         </div>
     </section>
 
-    {{-- Ouvrages Vedettes --}}
-    @if(!request('category') && !request('search') && !request('type') && $featuredBibliographies->count() > 0)
+    {{-- Ouvrages Vedettes --}}            @if(!request('category') && !request('search') && !request('type') && $featuredBiographies->count() > 0)
     <section class="py-16 bg-indigo-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-indigo-900 mb-4">
-                    Ouvrages Vedettes
+                    Personnalités Vedettes
                 </h2>
-                <p class="text-indigo-700">Œuvres majeures et références incontournables</p>
+                <p class="text-indigo-700">Figures majeures et références incontournables</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach($featuredBibliographies as $bibliography)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">                @foreach($featuredBiographies as $biography)
                 <article class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                    @if($bibliography->getFirstMediaUrl('cover'))
-                    <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $bibliography->getFirstMediaUrl('cover') }}')"></div>
-                    @else
-                    <div class="h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-white opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    </div>
-                    @endif
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-3 py-1 rounded-full">
-                                {{ $bibliography::getTypes()[$bibliography->type] ?? $bibliography->type }}
-                            </span>
-                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">
-                                ⭐ Vedette
-                            </span>
-                        </div>
-                          <h3 class="text-xl font-semibold text-indigo-900 mb-3">
-                            {{ $bibliography->getLocalizedTitle() }}
-                        </h3>
-
-                        <p class="text-indigo-700 font-medium mb-3">
-                            {{ $bibliography->getLocalizedAuthorName() }}
-                        </p>
-
-                        @if($bibliography->getLocalizedDescription())                        <p class="text-indigo-600 mb-4 text-sm line-clamp-3">
-                            {{ Str::limit(strip_tags($bibliography->getLocalizedDescription()), 120) }}
-                        </p>
-                        @endif
-
-                        <div class="flex items-center justify-between text-sm text-indigo-500 mb-4">
-                            @if($bibliography->langue)
-                            <span>{{ $bibliography->langue }}</span>
-                            @endif
-                            @if($bibliography->date_publication)
-                            <span>{{ $bibliography->date_publication->format('Y') }}</span>
-                            @endif
-                        </div>
-
-                        @if($bibliography->disponible_en_ligne)
-                        <div class="flex items-center text-green-600 text-sm">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <a href="{{ route('biography.show', $biography->slug) }}" class="block">
+                        @if($biography->cover_url)
+                        <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $biography->cover_url }}')"></div>
+                        @else
+                        <div class="h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            Disponible en ligne
                         </div>
                         @endif
-                    </div>
+
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-3 py-1 rounded-full">
+                                    {{ $biography::getTypes()[$biography->type] ?? $biography->type }}
+                                </span>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">
+                                    ⭐ Vedette
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-indigo-900 mb-3 hover:text-indigo-700 transition-colors">
+                                {{ $biography->getLocalizedTitle() }}
+                            </h3>
+
+                            <p class="text-indigo-700 font-medium mb-3">
+                                {{ $biography->getLocalizedAuthorName() }}
+                            </p>
+
+                            @if($biography->getLocalizedDescription())                        <p class="text-indigo-600 mb-4 text-sm line-clamp-3">
+                                {{ Str::limit(strip_tags($biography->getLocalizedDescription()), 120) }}
+                            </p>
+                            @endif
+
+                            <div class="flex items-center justify-between text-sm text-indigo-500 mb-4">
+                                @if($biography->langue)
+                                <span>{{ $biography->langue }}</span>
+                                @endif
+                                @if($biography->date_publication)
+                                <span>{{ $biography->date_publication->format('Y') }}</span>
+                                @endif
+                            </div>                            @if($biography->disponible_en_ligne)
+                            <div class="flex items-center text-green-600 text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Disponible en ligne
+                            </div>
+                            @endif
+                        </div>
+                    </a>
                 </article>
                 @endforeach
             </div>
@@ -156,7 +154,7 @@
                         </h2>
                         @endif
                         <p class="text-indigo-700 mt-2">
-                            {{ $bibliographies->total() }} ouvrage(s) trouvé(s)
+                            {{ $biographies->total() }} personnalité(s) trouvée(s)
                         </p>
                     </div>
 
@@ -168,54 +166,54 @@
             </div>
             @endif
 
-            @if($bibliographies->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach($bibliographies as $bibliography)
+            @if($biographies->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">                @foreach($biographies as $biography)
                 <article class="bg-white border border-indigo-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
-                    @if($bibliography->getFirstMediaUrl('cover'))
-                    <div class="h-40 bg-cover bg-center" style="background-image: url('{{ $bibliography->getFirstMediaUrl('cover') }}')"></div>
-                    @else
-                    <div class="h-40 bg-gradient-to-br from-indigo-300 to-purple-400 flex items-center justify-center">
-                        <svg class="w-12 h-12 text-white opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    </div>
-                    @endif
-
-                    <div class="p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-1 rounded">
-                                {{ $bibliography::getTypes()[$bibliography->type] ?? $bibliography->type }}
-                            </span>
-                            @if($bibliography->featured)
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            @endif
+                    <a href="{{ route('biography.show', $biography->slug) }}" class="block">
+                        @if($biography->getFirstMediaUrl('cover'))
+                        <div class="h-40 bg-cover bg-center" style="background-image: url('{{ $biography->getFirstMediaUrl('cover') }}')"></div>
+                        @else
+                        <div class="h-40 bg-gradient-to-br from-indigo-300 to-purple-400 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
                         </div>
-                          <h3 class="text-lg font-semibold text-indigo-900 mb-2 line-clamp-2">
-                            {{ $bibliography->getLocalizedTitle() }}
-                        </h3>
+                        @endif
 
-                        <p class="text-indigo-700 font-medium mb-2 text-sm">
-                            {{ $bibliography->getLocalizedAuthorName() }}
-                        </p>
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-1 rounded">
+                                    {{ $biography::getTypes()[$biography->type] ?? $biography->type }}
+                                </span>
+                                @if($biography->featured)
+                                <span class="text-yellow-500 text-xs">⭐</span>
+                                @endif
+                            </div>
+                            <h3 class="text-lg font-semibold text-indigo-900 mb-2 line-clamp-2 hover:text-indigo-700 transition-colors">
+                                {{ $biography->getLocalizedTitle() }}
+                            </h3>
 
-                        @if($bibliography->getLocalizedDescription())
+                            <p class="text-indigo-700 font-medium mb-2 text-sm">
+                                {{ $biography->getLocalizedAuthorName() }}
+                            </p>
+
+                            @if($biography->getLocalizedDescription())
                         <p class="text-indigo-600 mb-3 text-xs line-clamp-2">
-                            {{ Str::limit(strip_tags($bibliography->getLocalizedDescription()), 80) }}
+                            {{ Str::limit(strip_tags($biography->getLocalizedDescription()), 80) }}
                         </p>
                         @endif
 
                         <div class="flex items-center justify-between text-xs text-indigo-500 mb-3">
-                            @if($bibliography->langue)
-                            <span>{{ $bibliography->langue }}</span>
+                            @if($biography->langue)
+                            <span>{{ $biography->langue }}</span>
                             @endif
-                            @if($bibliography->date_publication)
-                            <span>{{ $bibliography->date_publication->format('Y') }}</span>
+                            @if($biography->date_publication)
+                            <span>{{ $biography->date_publication->format('Y') }}</span>
                             @endif
                         </div>
 
                         <div class="flex items-center justify-between">
-                            @if($bibliography->disponible_en_ligne)
+                            @if($biography->disponible_en_ligne)
                             <span class="flex items-center text-green-600 text-xs">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -226,32 +224,29 @@
                             <span class="text-indigo-400 text-xs">Physique</span>
                             @endif
 
-                            @if($bibliography->pages)
-                            <span class="text-indigo-400 text-xs">{{ $bibliography->pages }} p.</span>
+                            @if($biography->pages)
+                            <span class="text-indigo-400 text-xs">{{ $biography->pages }} p.</span>
                             @endif
-                        </div>
-
-                        @if($bibliography->disponible_en_ligne && $bibliography->url_telechargement)
+                        </div>                        @if($biography->disponible_en_ligne && $biography->url_telechargement)
                         <div class="mt-3 pt-3 border-t border-indigo-100">
-                            <a href="{{ $bibliography->url_telechargement }}"
-                               target="_blank"
-                               class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-xs font-medium">
+                            <span class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-xs font-medium">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
-                                Télécharger
-                            </a>
+                                Disponible en ligne
+                            </span>
                         </div>
                         @endif
-                    </div>
+                        </div>
+                    </a>
                 </article>
                 @endforeach
             </div>
 
             {{-- Pagination --}}
-            @if($bibliographies->hasPages())
+            @if($biographies->hasPages())
             <div class="mt-12 flex justify-center">
-                {{ $bibliographies->withQueryString()->links() }}
+                {{ $biographies->withQueryString()->links() }}
             </div>
             @endif
             @else
@@ -260,17 +255,17 @@
                 <svg class="w-24 h-24 text-indigo-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
-                <h3 class="text-xl font-semibold text-indigo-900 mb-2">Aucun ouvrage trouvé</h3>
+                <h3 class="text-xl font-semibold text-indigo-900 mb-2">                    Aucune personnalité trouvée</h3>
                 <p class="text-indigo-700 mb-6">
                     @if(request('search'))
                     Aucun résultat pour "{{ request('search') }}". Essayez avec d'autres mots-clés.
                     @else
-                    Aucun ouvrage disponible dans cette catégorie pour le moment.
+                    Aucune personnalité disponible dans cette catégorie pour le moment.
                     @endif
                 </p>
                 <a href="{{ route('biography') }}"
                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium transition-colors">
-                    Voir tous les ouvrages
+                    Voir toutes les personnalités
                 </a>
             </div>
             @endif
@@ -282,9 +277,9 @@
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-indigo-900 mb-4">
-                    Collection Bibliographique
+                    Collection Biographique
                 </h2>
-                <p class="text-indigo-700">Un patrimoine littéraire et spirituel exceptionnel</p>
+                <p class="text-indigo-700">Un patrimoine humain et spirituel exceptionnel</p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
@@ -306,7 +301,7 @@
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-indigo-900 mb-6">
-                        À Propos de Cette Bibliographie
+                        À Propos de Cette Biographie
                     </h2>
                 </div>
 
@@ -319,7 +314,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-indigo-900 mb-2">Exhaustivité</h3>
                         <p class="text-indigo-700 text-sm">
-                            Répertoire complet des œuvres de Cheikh Ahmadou Bamba, de ses khalifes et de ses fils.
+                            Répertoire complet des biographies de Cheikh Ahmadou Bamba, de ses khalifes et de ses fils.
                         </p>
                     </div>
 
@@ -355,10 +350,10 @@
     <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         <div class="container mx-auto px-6 text-center">
             <h2 class="text-3xl font-bold mb-4">
-                Explorez le Patrimoine Littéraire Mouride
+                Explorez le Patrimoine Humain Mouride
             </h2>
             <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-                Plongez dans l'immense richesse intellectuelle et spirituelle de la tradition mouride.
+                Découvrez les personnalités qui ont façonné la tradition mouride.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('writing') }}"

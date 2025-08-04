@@ -3,8 +3,6 @@
 
 // Initialisation de l'application
 export function initApp() {
-    console.log('🕌 Initialisation de Limahine App...');
-
     // Initialiser tous les composants
     initLanguageSelector();
     initMobileMenu();
@@ -14,8 +12,6 @@ export function initApp() {
     initFormValidation();
     initTooltips();
     initModalSystem();
-
-    console.log('✅ Limahine App initialisée avec succès');
 }
 
 // Gestion du sélecteur de langue
@@ -404,7 +400,7 @@ window.switchLanguage = function(locale) {
         }
     })
     .catch(error => {
-        console.error('Erreur lors du changement de langue:', error);
+        // Gestion silencieuse des erreurs de changement de langue
     });
 }
 

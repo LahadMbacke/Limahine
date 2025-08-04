@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Publication;
 use App\Models\Temoignage;
-use App\Models\Bibliographie;
+use App\Models\Biographie;
 use App\Models\VideoTrailer;
 use App\Models\Page;
 
@@ -38,7 +38,7 @@ class HomeController extends Controller
         $stats = [
             'publications' => Publication::published()->count(),
             'temoignages' => Temoignage::published()->verified()->count(),
-            'bibliographies' => Bibliographie::published()->count(),
+            'biographies' => Biographie::published()->count(),
             'trailers' => VideoTrailer::published()->count(),
         ];
 
@@ -47,7 +47,7 @@ class HomeController extends Controller
 
     public function biography()
     {
-        $query = Bibliographie::published()->latest();
+        $query = Biographie::published()->latest();
 
         // Filtrage par catégorie
         if (request('category')) {
@@ -75,14 +75,14 @@ class HomeController extends Controller
             });
         }
 
-        $bibliographies = $query->paginate(16);
-        $categories = Bibliographie::getCategories();
-        $types = Bibliographie::getTypes();
+        $biographies = $query->paginate(16);
+        $categories = Biographie::getCategories();
+        $types = Biographie::getTypes();
 
-        // Ouvrages vedettes (uniquement si pas de filtre)
-        $featuredBibliographies = collect();
+        // Personnalités vedettes (uniquement si pas de filtre)
+        $featuredBiographies = collect();
         if (!request('category') && !request('search') && !request('type')) {
-            $featuredBibliographies = Bibliographie::published()
+            $featuredBiographies = Biographie::published()
                 ->featured()
                 ->take(6)
                 ->get();
@@ -91,10 +91,10 @@ class HomeController extends Controller
         // Statistiques par catégorie
         $stats = [];
         foreach ($categories as $key => $label) {
-            $stats[$key] = Bibliographie::published()->byCategory($key)->count();
+            $stats[$key] = Biographie::published()->byCategory($key)->count();
         }
 
-        return view('bibliography-new', compact('bibliographies', 'categories', 'types', 'featuredBibliographies', 'stats'));
+        return view('biography-new', compact('biographies', 'categories', 'types', 'featuredBiographies', 'stats'));
     }
 
     public function writing()
@@ -169,12 +169,12 @@ class HomeController extends Controller
 
     public function chercheurs()
     {
-        $bibliographies = Bibliographie::published()
+        $biographies = Biographie::published()
             ->byCategory('etudes_academiques')
             ->latest()
             ->paginate(12);
 
-        $academicResources = Bibliographie::published()
+        $academicResources = Biographie::published()
             ->where(function($query) {
                 $query->byType('these')
                       ->orWhere('type', 'memoire')
@@ -183,7 +183,7 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        return view('chercheurs-new', compact('bibliographies', 'academicResources'));
+        return view('chercheurs-new', compact('biographies', 'academicResources'));
     }
 
     public function publications()
@@ -208,5 +208,33 @@ class HomeController extends Controller
             ->get();
 
         return view('publications.show', compact('publication', 'relatedPublications'));
+    }
+
+    public function showBiography(Biographie $biographie)
+    {
+        // Vérifier que la biographie est publiée
+        if (!$biographie->is_published) {
+            abort(404);
+        }
+
+        // Biographies similaires (même catégorie)
+        $relatedBiographies = Biographie::published()
+            ->where('id', '!=', $biographie->id)
+            ->where('category', $biographie->category)
+            ->take(4)
+            ->get();
+
+        // Si pas assez de biographies similaires, prendre d'autres biographies
+        if ($relatedBiographies->count() < 4) {
+            $additionalBiographies = Biographie::published()
+                ->where('id', '!=', $biographie->id)
+                ->whereNotIn('id', $relatedBiographies->pluck('id'))
+                ->take(4 - $relatedBiographies->count())
+                ->get();
+
+            $relatedBiographies = $relatedBiographies->concat($additionalBiographies);
+        }
+
+        return view('biography-detail', compact('biographie', 'relatedBiographies'));
     }
 }

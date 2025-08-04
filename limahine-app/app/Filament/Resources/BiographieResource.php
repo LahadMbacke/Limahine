@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BibliographieResource\Pages;
-use App\Models\Bibliographie;
+use App\Filament\Resources\BiographieResource\Pages;
+use App\Models\Biographie;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -11,17 +11,17 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class BibliographieResource extends Resource
+class BiographieResource extends Resource
 {
-    protected static ?string $model = Bibliographie::class;
+    protected static ?string $model = Biographie::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
-    protected static ?string $navigationLabel = 'Bibliographie';
+    protected static ?string $navigationLabel = 'Biographie';
 
-    protected static ?string $modelLabel = 'Ouvrage';
+    protected static ?string $modelLabel = 'Personnalité';
 
-    protected static ?string $pluralModelLabel = 'Ouvrages';
+    protected static ?string $pluralModelLabel = 'Personnalités';
 
     protected static ?string $navigationGroup = 'Contenu';
 
@@ -31,6 +31,13 @@ class BibliographieResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Informations bibliographiques')
                     ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug (URL)')
+                            ->helperText('Laissez vide pour générer automatiquement')
+                            ->maxLength(255)
+                            ->unique(Biographie::class, 'slug', ignoreRecord: true)
+                            ->columnSpanFull(),
+
                         Forms\Components\TextInput::make('title.fr')
                             ->label('Titre (Français)')
                             ->required(),
@@ -54,26 +61,74 @@ class BibliographieResource extends Resource
 
                 Forms\Components\Section::make('Description et catégorisation')
                     ->schema([
-                        Forms\Components\Textarea::make('description.fr')
+                        Forms\Components\RichEditor::make('description.fr')
                             ->label('Description (Français)')
-                            ->rows(3),
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpanFull(),
 
-                        Forms\Components\Textarea::make('description.en')
+                        Forms\Components\RichEditor::make('description.en')
                             ->label('Description (Anglais)')
-                            ->rows(3),
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpanFull(),
 
-                        Forms\Components\Textarea::make('description.ar')
+                        Forms\Components\RichEditor::make('description.ar')
                             ->label('Description (Arabe)')
-                            ->rows(3),
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpanFull(),
 
                         Forms\Components\Select::make('type')
                             ->label('Type d\'ouvrage')
-                            ->options(Bibliographie::getTypes())
+                            ->options(Biographie::getTypes())
                             ->required(),
 
                         Forms\Components\Select::make('category')
                             ->label('Catégorie')
-                            ->options(Bibliographie::getCategories())
+                            ->options(Biographie::getCategories())
                             ->required(),
 
                         Forms\Components\TextInput::make('langue')
@@ -107,14 +162,29 @@ class BibliographieResource extends Resource
                             ->url()
                             ->visible(fn (callable $get) => $get('disponible_en_ligne')),
 
-                        Forms\Components\FileUpload::make('cover')
+                        Forms\Components\FileUpload::make('cover_path')
                             ->label('Couverture')
                             ->image()
-                            ->imageEditor(),
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('biographies/covers')
+                            ->visibility('public')
+                            ->maxSize(5120) // 5MB max
+                            ->imagePreviewHeight('250')
+                            ->loadingIndicatorPosition('left')
+                            ->panelAspectRatio('2:1')
+                            ->panelLayout('integrated')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->uploadProgressIndicatorPosition('left'),
 
-                        Forms\Components\FileUpload::make('document')
+                        Forms\Components\FileUpload::make('document_path')
                             ->label('Document PDF')
                             ->acceptedFileTypes(['application/pdf'])
+                            ->disk('public')
+                            ->directory('biographies/documents')
+                            ->visibility('public')
+                            ->maxSize(10240) // 10MB max
                             ->visible(fn (callable $get) => $get('disponible_en_ligne')),
                     ])->columns(2),
 
@@ -133,6 +203,13 @@ class BibliographieResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('cover_path')
+                    ->label('Couverture')
+                    ->disk('public')
+                    ->size(60)
+                    ->circular()
+                    ->defaultImageUrl(url('/assets/unnamed.jpg')),
+
                 Tables\Columns\TextColumn::make('title.fr')
                     ->label('Titre')
                     ->searchable()
@@ -148,12 +225,12 @@ class BibliographieResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->label('Type')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => Bibliographie::getTypes()[$state] ?? $state),
+                    ->formatStateUsing(fn (string $state): string => Biographie::getTypes()[$state] ?? $state),
 
                 Tables\Columns\TextColumn::make('category')
                     ->label('Catégorie')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => Bibliographie::getCategories()[$state] ?? $state),
+                    ->formatStateUsing(fn (string $state): string => Biographie::getCategories()[$state] ?? $state),
 
                 Tables\Columns\TextColumn::make('langue')
                     ->label('Langue'),
@@ -178,11 +255,11 @@ class BibliographieResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Type')
-                    ->options(Bibliographie::getTypes()),
+                    ->options(Biographie::getTypes()),
 
                 Tables\Filters\SelectFilter::make('category')
                     ->label('Catégorie')
-                    ->options(Bibliographie::getCategories()),
+                    ->options(Biographie::getCategories()),
 
                 Tables\Filters\Filter::make('disponible_en_ligne')
                     ->label('Disponible en ligne')
@@ -212,16 +289,15 @@ class BibliographieResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBibliographies::route('/'),
-            'create' => Pages\CreateBibliographie::route('/create'),
-            'edit' => Pages\EditBibliographie::route('/{record}/edit'),
+            'index' => Pages\ListBiographies::route('/'),
+            'create' => Pages\CreateBiographie::route('/create'),
+            'edit' => Pages\EditBiographie::route('/{record}/edit'),
         ];
     }
 }

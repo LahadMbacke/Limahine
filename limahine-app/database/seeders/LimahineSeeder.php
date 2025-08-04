@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Publication;
 use App\Models\Temoignage;
-use App\Models\Bibliographie;
+use App\Models\Biographie;
 use App\Models\Page;
 
 class LimahineSeeder extends Seeder
@@ -135,8 +135,8 @@ class LimahineSeeder extends Seeder
             Temoignage::create($temoignageData);
         }
 
-        // Créer des entrées bibliographiques
-        $bibliographies = [
+        // Créer des entrées biographiques
+        $biographies = [
             [
                 'title' => [
                     'fr' => 'Masâlik al-Jinân',
@@ -163,8 +163,8 @@ class LimahineSeeder extends Seeder
             ]
         ];
 
-        foreach ($bibliographies as $bibData) {
-            Bibliographie::create($bibData);
+        foreach ($biographies as $bibData) {
+            Biographie::create($bibData);
         }
 
         // Créer des pages

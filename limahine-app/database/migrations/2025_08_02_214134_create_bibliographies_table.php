@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bibliographies', function (Blueprint $table) {
+        Schema::create('biographies', function (Blueprint $table) {
             $table->id();
             $table->json('title'); // Translatable
             $table->json('author_name'); // Translatable
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bibliographies');
+        Schema::dropIfExists('biographies');
     }
 };

@@ -282,7 +282,7 @@
                 </a>
                 <a href="{{ route('biography') }}"
                    class="border-2 border-white text-white hover:bg-white hover:text-emerald-600 px-8 py-3 rounded-full font-semibold transition-colors">
-                    Explorer la Bibliographie
+                    Explorer la Biographie
                 </a>
             </div>
         </div>

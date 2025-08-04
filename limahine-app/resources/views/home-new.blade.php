@@ -66,7 +66,7 @@
                     <div class="text-amber-600 text-xs sm:text-sm">Témoignages</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl sm:text-2xl md:text-3xl font-bold text-amber-800 mb-1 md:mb-2">{{ $stats['bibliographies'] ?? 0 }}</div>
+                    <div class="text-xl sm:text-2xl md:text-3xl font-bold text-amber-800 mb-1 md:mb-2">{{ $stats['biographies'] ?? 0 }}</div>
                     <div class="text-amber-600 text-xs sm:text-sm">Ouvrages</div>
                 </div>
                 <div class="text-center">
@@ -485,26 +485,4 @@
         </div>
     </section>
 @endsection
-
-@push('styles')
-<style>
-    .font-arabic {
-        font-family: 'Amiri', 'Times New Roman', serif;
-    }
-
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
-@endpush
 
