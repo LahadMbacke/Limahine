@@ -196,6 +196,8 @@
     </x-section>
 @endsection
 
+
+
 @push('scripts')
 <script>
     function loadMoreArticles() {
