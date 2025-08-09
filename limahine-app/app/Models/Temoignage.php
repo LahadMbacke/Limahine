@@ -75,20 +75,36 @@ class Temoignage extends Model implements HasMedia
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
     }
 
-    // Méthodes sécurisées pour obtenir les URLs des médias
+    // Méthodes pour obtenir les URLs des médias (FTP)
+    public function getAuthorPhotoUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'author_photo', $conversion);
+    }
+
+    public function getGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
+    }
+
+    public function getAudioUrls(): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'audio');
+    }
+
+    // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)
     public function getSecureAuthorPhotoUrl(string $conversion = ''): string
     {
-        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'author_photo', $conversion);
+        return $this->getAuthorPhotoUrl($conversion);
     }
 
     public function getSecureGalleryUrls(string $conversion = ''): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+        return $this->getGalleryUrls($conversion);
     }
 
     public function getSecureAudioUrls(): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'audio');
+        return $this->getAudioUrls();
     }
 
     public function hasSecureAuthorPhoto(): bool

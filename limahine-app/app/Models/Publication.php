@@ -166,35 +166,67 @@ class Publication extends Model implements HasMedia
               ->performOnCollections('featured_image', 'gallery');
     }
 
-    // Méthodes sécurisées pour obtenir les URLs des médias
+    // Méthodes pour obtenir les URLs des médias (FTP)
+    public function getFeaturedImageUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'featured_image', $conversion);
+    }
+
+    public function getGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
+    }
+
+    public function getDocumentUrls(): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'documents');
+    }
+
+    public function getAudioUrls(): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'audio');
+    }
+
+    // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)
     public function getSecureFeaturedImageUrl(string $conversion = ''): string
     {
-        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'featured_image', $conversion);
+        return $this->getFeaturedImageUrl($conversion);
     }
 
     public function getSecureGalleryUrls(string $conversion = ''): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+        return $this->getGalleryUrls($conversion);
     }
 
     public function getSecureDocumentUrls(): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'documents');
+        return $this->getDocumentUrls();
     }
 
     public function getSecureAudioUrls(): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'audio');
+        return $this->getAudioUrls();
     }
 
     public function hasSecureFeaturedImage(): bool
     {
-        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'featured_image');
+        return $this->hasFeaturedImage();
     }
 
     public function hasSecureGallery(): bool
     {
-        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'gallery');
+        return $this->hasGallery();
+    }
+
+    // Helper methods pour les médias
+    public function hasFeaturedImage(): bool
+    {
+        return $this->hasMedia('featured_image');
+    }
+
+    public function hasGallery(): bool
+    {
+        return $this->hasMedia('gallery');
     }
 
     // Helper methods pour les documents

@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Enregistrer le service de migration FTP
+        $this->app->singleton(\App\Services\FtpMigrationService::class);
     }
 
     /**

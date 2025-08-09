@@ -150,8 +150,11 @@ class HomeController extends Controller
         return view('publications.show', compact('publication', 'relatedPublications'));
     }
 
-    public function viewDocument(Publication $publication, $documentId)
+    public function viewDocument($publicationId, $documentId)
     {
+        // Récupérer la publication par ID
+        $publication = Publication::findOrFail($publicationId);
+        
         // Vérifier que la publication est publiée
         if (!$publication->is_published) {
             abort(404);
@@ -245,8 +248,11 @@ class HomeController extends Controller
         ]);
     }
 
-    public function serveDocument(Publication $publication, $documentId, Request $request)
+    public function serveDocument($publicationId, $documentId, Request $request)
     {
+        // Récupérer la publication par ID
+        $publication = Publication::findOrFail($publicationId);
+        
         // Vérifier que la publication est publiée
         if (!$publication->is_published) {
             abort(404);

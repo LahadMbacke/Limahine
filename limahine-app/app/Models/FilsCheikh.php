@@ -103,20 +103,36 @@ class FilsCheikh extends Model implements HasMedia
               ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
-    // Méthodes sécurisées pour obtenir les URLs des médias
+    // Méthodes pour obtenir les URLs des médias (FTP)
+    public function getCoverImageUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'cover_image', $conversion);
+    }
+
+    public function getPortraitUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'portrait', $conversion);
+    }
+
+    public function getGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
+    }
+
+    // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)
     public function getSecureCoverImageUrl(string $conversion = ''): string
     {
-        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'cover_image', $conversion);
+        return $this->getCoverImageUrl($conversion);
     }
 
     public function getSecurePortraitUrl(string $conversion = ''): string
     {
-        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'portrait', $conversion);
+        return $this->getPortraitUrl($conversion);
     }
 
     public function getSecureGalleryUrls(string $conversion = ''): array
     {
-        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+        return $this->getGalleryUrls($conversion);
     }
 
     public function hasSecureCoverImage(): bool

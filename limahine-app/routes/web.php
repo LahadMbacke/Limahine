@@ -6,10 +6,22 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\VideoTrailerController;
 use App\Http\Controllers\FilsCheikhController;
 use App\Http\Controllers\SecureMediaController;
+use App\Http\Controllers\FtpMediaController;
 
 // Routes pour la gestion des langues
 Route::post('/language/switch', [LanguageController::class, 'switch'])->name('language.switch');
 Route::get('/language/current', [LanguageController::class, 'current'])->name('language.current');
+
+// Routes pour le FTP Media
+Route::prefix('admin/ftp')->middleware(['web'])->group(function () {
+    Route::get('/', function () {
+        return view('admin.ftp-admin');
+    })->name('ftp.admin');
+    Route::get('/test-connection', [FtpMediaController::class, 'testConnection'])->name('ftp.test');
+    Route::get('/info', [FtpMediaController::class, 'getInfo'])->name('ftp.info');
+    Route::post('/migrate', [FtpMediaController::class, 'startMigration'])->name('ftp.migrate');
+    Route::get('/status', [FtpMediaController::class, 'getMigrationStatus'])->name('ftp.status');
+});
 
 // Route pour la page d'accueil
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,8 +36,98 @@ Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheu
 Route::get('/publications/{publication:slug}', [HomeController::class, 'showPublication'])->name('publications.show');
 
 // Routes pour les documents des publications
-Route::get('/publications/{publication}/documents/{document}/view', [HomeController::class, 'viewDocument'])->name('publications.documents.view');
-Route::get('/publications/{publication}/documents/{document}/serve', [HomeController::class, 'serveDocument'])->name('publications.documents.serve');
+Route::get('/publications/{publication:id}/documents/{document}/view', [HomeController::class, 'viewDocument'])->name('publications.documents.view');
+Route::get('/publications/{publication:id}/documents/{document}/serve', [HomeController::class, 'serveDocument'])->name('publications.documents.serve');
+
+// Route de test pour la configuration FTP
+Route::get('/test-ftp', function() {
+    try {
+        $config = config('filesystems.disks.ftp');
+        
+        $results = [
+            'config_loaded' => true,
+            'config' => [
+                'host' => $config['host'],
+                'port' => $config['port'],
+                'username' => $config['username'],
+                'root' => $config['root'],
+            ]
+        ];
+        
+        // Test de connexion avec Storage
+        $ftpDisk = Storage::disk('ftp');
+        $testContent = "Test Laravel FTP - " . now();
+        $testFile = 'test_laravel.txt';
+        
+        $writeResult = $ftpDisk->put($testFile, $testContent);
+        $results['write_test'] = $writeResult;
+        
+        if ($writeResult) {
+            $results['file_exists'] = $ftpDisk->exists($testFile);
+            if ($ftpDisk->exists($testFile)) {
+                $results['content'] = $ftpDisk->get($testFile);
+                $ftpDisk->delete($testFile);
+                $results['cleanup'] = true;
+            }
+        }
+        
+        return response()->json($results);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
+// Route de test pour vérifier les méthodes de Publication
+Route::get('/test-publication-methods', function() {
+    $publication = \App\Models\Publication::first();
+    if (!$publication) {
+        return response()->json(['error' => 'Aucune publication trouvée']);
+    }
+    
+    $methods = [];
+    $methods['hasDocuments_exists'] = method_exists($publication, 'hasDocuments');
+    $methods['getDocuments_exists'] = method_exists($publication, 'getDocuments');
+    $methods['getDocumentsCount_exists'] = method_exists($publication, 'getDocumentsCount');
+    $methods['getFormattedDocuments_exists'] = method_exists($publication, 'getFormattedDocuments');
+    
+    if ($methods['hasDocuments_exists']) {
+        $methods['hasDocuments_result'] = $publication->hasDocuments();
+        $methods['getDocumentsCount_result'] = $publication->getDocumentsCount();
+    }
+    
+    return response()->json([
+        'publication_id' => $publication->id,
+        'publication_title' => $publication->getLocalizedTitle(),
+        'methods' => $methods,
+        'class' => get_class($publication)
+    ]);
+});
+
+// Route de test pour les documents
+Route::get('/test-documents/{publicationId}', function($publicationId) {
+    $publication = \App\Models\Publication::findOrFail($publicationId);
+    $documents = $publication->getMedia('documents');
+    return response()->json([
+        'publication_id' => $publication->id,
+        'publication_title' => $publication->getLocalizedTitle(),
+        'documents_count' => $documents->count(),
+        'documents' => $documents->map(function($doc) use ($publication) {
+            return [
+                'id' => $doc->id,
+                'name' => $doc->name,
+                'file_name' => $doc->file_name,
+                'mime_type' => $doc->mime_type,
+                'size' => $doc->size,
+                'view_url' => route('publications.documents.view', ['publication' => $publication->id, 'document' => $doc->id]),
+                'serve_url' => route('publications.documents.serve', ['publication' => $publication->id, 'document' => $doc->id])
+            ];
+        })
+    ]);
+});
 
 // Routes pour la section Découverte - Fils de Cheikh Ahmadou Bamba
 Route::get('/decouverte', [FilsCheikhController::class, 'index'])->name('decouverte.index');
