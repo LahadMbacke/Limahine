@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'trailers' => 'Vidéo',
+    'video_trailers' => 'Vidéo',
+    'featured_trailers' => 'Trailers en Vedette',
+    'all_trailers' => 'Tous les Trailers',
+    'watch_trailer' => 'Regarder',
+    'view_on_youtube' => 'Voir sur YouTube',
+    'discover_youtube_channel' => 'Découvrir la chaîne YouTube',
+    'duration' => 'Durée',
+    'category' => 'Catégorie',
+    'featured' => 'En vedette',
+    'published_at' => 'Publié le',
+    'search_trailers' => 'Rechercher des trailers...',
+    'all_categories' => 'Toutes les catégories',
+    'filter' => 'Filtrer',
+    'no_trailers_found' => 'Aucun trailer trouvé',
+    'try_different_search' => 'Essayez de modifier vos critères de recherche.',
+    'results' => 'résultats',
+    'discover_more_youtube' => 'Découvrez plus sur notre chaîne YouTube',
+    'full_teachings_youtube' => 'Retrouvez l\'intégralité de nos enseignements et bien plus encore sur Limahine TV',
+    'visit_limahine_tv' => 'Visiter Limahine TV',
+    'similar_trailers' => 'Trailers similaires',
+    'share' => 'Partager',
+    'link_copied' => 'Lien copié dans le presse-papiers !',
+    'description' => 'Description',
+    'keywords' => 'Mots-clés',
+    'back_to_trailers' => 'Retour aux trailers',
+
+    // Catégories
+    'categories' => [
+        'fiqh' => 'Fiqh (Jurisprudence islamique)',
+        'tasawwuf' => 'Taṣawwuf (Éducation spirituelle)',
+        'sira' => 'Sîra (Biographie du Prophète)',
+        'khassaids' => 'Khassaids',
+        'enseignements' => 'Enseignements généraux',
+        'temoignages' => 'Témoignages',
+    ],
+];
