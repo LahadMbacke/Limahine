@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Chercheurs - Limahine')
-@section('description', 'Espace dédié aux chercheurs, étudiants et passionnés,            @if($biographies->hasPages())
-            <div class="mt-12 flex justify-center">
-                {{ $biographies->links() }}
-            </div>
-            @endifoupant des ressources académiques, publications spécialisées et documents d\'analyse sur la pensée de Cheikh Ahmadou Bamba.')
+@section('description', 'Espace dédié aux chercheurs, étudiants et passionnés, groupant des ressources académiques, publications spécialisées et documents d\'analyse sur la pensée de Cheikh Ahmadou Bamba.')
 
 @section('content')
     {{-- Header Section --}}
@@ -358,10 +354,7 @@
                                 <span class="w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                                 Outils d'analyse textuelle et linguistique
                             </li>
-                            <li class="flex items-start">
-                                <span class="w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                                Logiciels de gestion bibliographique
-                            </li>
+                            
                             <li class="flex items-start">
                                 <span class="w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                                 Plateformes de collaboration académique

@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Publication;
 use App\Models\Temoignage;
-use App\Models\Biographie;
 use App\Models\Page;
 
 class LimahineSeeder extends Seeder
@@ -133,38 +132,6 @@ class LimahineSeeder extends Seeder
 
         foreach ($temoignages as $temoignageData) {
             Temoignage::create($temoignageData);
-        }
-
-        // Créer des entrées biographiques
-        $biographies = [
-            [
-                'title' => [
-                    'fr' => 'Masâlik al-Jinân',
-                    'en' => 'Masalik al-Jinan',
-                    'ar' => 'مسالك الجنان'
-                ],
-                'author_name' => [
-                    'fr' => 'Cheikh Ahmadou Bamba Mbacké',
-                    'en' => 'Cheikh Ahmadou Bamba Mbacké',
-                    'ar' => 'الشيخ أحمدو بمب إمباكي'
-                ],
-                'description' => [
-                    'fr' => 'Chef-d\'œuvre de littérature spirituelle traitant du voyage de l\'âme vers Dieu.',
-                    'en' => 'Masterpiece of spiritual literature dealing with the soul\'s journey to God.',
-                    'ar' => 'تحفة من الأدب الروحي تتناول رحلة الروح إلى الله'
-                ],
-                'type' => 'livre',
-                'langue' => 'Arabe',
-                'date_publication' => '1895-01-01',
-                'category' => 'cheikh_ahmadou_bamba',
-                'is_published' => true,
-                'featured' => true,
-                'disponible_en_ligne' => true
-            ]
-        ];
-
-        foreach ($biographies as $bibData) {
-            Biographie::create($bibData);
         }
 
         // Créer des pages

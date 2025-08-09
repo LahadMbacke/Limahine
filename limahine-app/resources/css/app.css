@@ -268,10 +268,6 @@ html[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
     @apply absolute top-2 left-4 text-6xl font-serif text-primary-200;
   }
 
-  .bibliography-card {
-    @apply card hover:border-primary-300 group;
-  }
-
   /* Filtres */
   .filter-tag {
     @apply inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium

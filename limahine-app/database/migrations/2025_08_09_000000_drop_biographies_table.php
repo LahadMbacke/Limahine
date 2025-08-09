@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('biographies', function (Blueprint $table) {
-            $table->string('slug')->nullable()->unique()->after('id');
-            $table->index('slug');
-        });
+        Schema::dropIfExists('biographies');
     }
 
     /**
@@ -22,9 +19,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('biographies', function (Blueprint $table) {
-            $table->dropIndex(['slug']);
-            $table->dropColumn('slug');
-        });
+        // Cette migration est irréversible car nous supprimons complètement la fonctionnalité
+        // Il faudrait recréer toute la structure si besoin
     }
 };

@@ -13,9 +13,6 @@ Route::get('/language/current', [LanguageController::class, 'current'])->name('l
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Routes pour les pages principales
-// Route::get('/biographie', [HomeController::class, 'biography'])->name('biography');
-// Route::get('/biographie/{biographie}', [HomeController::class, 'showBiography'])->name('biography.show');
-
 Route::get('/publications', [HomeController::class, 'writing'])->name('writing');
 Route::get('/philosophie', [HomeController::class, 'philosophy'])->name('philosophy');
 Route::get('/temoignages', [HomeController::class, 'testimonials'])->name('testimonials');
