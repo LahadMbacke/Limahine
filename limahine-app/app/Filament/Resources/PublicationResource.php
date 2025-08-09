@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class PublicationResource extends Resource
 {
@@ -105,6 +106,27 @@ class PublicationResource extends Resource
                             ->label('Image mise en avant')
                             ->image()
                             ->imageEditor(),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
+                            ->label('Fichiers attachés')
+                            ->collection('documents')
+                            ->multiple()
+                            ->acceptedFileTypes([
+                                'application/pdf',
+                                'application/msword',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/vnd.ms-powerpoint',
+                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                                'text/plain',
+                                'application/rtf',
+                                'application/zip',
+                                'application/x-rar-compressed'
+                            ])
+                            ->maxFiles(10)
+                            ->helperText('Formats acceptés : PDF, Word, Excel, PowerPoint, TXT, RTF, ZIP, RAR (Max: 10 fichiers)')
+                            ->columnSpanFull(),
 
                         Forms\Components\TagsInput::make('tags')
                             ->label('Mots-clés'),

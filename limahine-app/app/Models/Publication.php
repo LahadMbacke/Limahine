@@ -122,7 +122,19 @@ class Publication extends Model implements HasMedia
               ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
 
         $this->addMediaCollection('documents')
-              ->acceptsMimeTypes(['application/pdf', 'application/msword']);
+              ->acceptsMimeTypes([
+                  'application/pdf',
+                  'application/msword',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                  'application/vnd.ms-excel',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                  'application/vnd.ms-powerpoint',
+                  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                  'text/plain',
+                  'application/rtf',
+                  'application/zip',
+                  'application/x-rar-compressed'
+              ]);
 
         $this->addMediaCollection('audio')
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
@@ -183,5 +195,94 @@ class Publication extends Model implements HasMedia
     public function hasSecureGallery(): bool
     {
         return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'gallery');
+    }
+
+    // Helper methods pour les documents
+    public function hasDocuments(): bool
+    {
+        return $this->getMedia('documents')->count() > 0;
+    }
+
+    public function getDocuments()
+    {
+        return $this->getMedia('documents');
+    }
+
+    public function getDocumentsCount(): int
+    {
+        return $this->getMedia('documents')->count();
+    }
+
+    public function getFormattedDocuments(): array
+    {
+        $documents = $this->getMedia('documents');
+        $formattedDocuments = [];
+
+        foreach ($documents as $document) {
+            $extension = strtolower(pathinfo($document->file_name, PATHINFO_EXTENSION));
+            
+            $formattedDocuments[] = [
+                'id' => $document->id,
+                'name' => $document->name,
+                'file_name' => $document->file_name,
+                'mime_type' => $document->mime_type,
+                'size' => $document->size,
+                'human_readable_size' => $document->human_readable_size,
+                'extension' => $extension,
+                'type_icon' => $this->getDocumentTypeIcon($extension),
+                'type_color' => $this->getDocumentTypeColor($extension),
+                'url' => route('publications.documents.serve', ['publication' => $this->id, 'document' => $document->id])
+            ];
+        }
+
+        return $formattedDocuments;
+    }
+
+    public function getDocumentTypeIcon(string $extension): string
+    {
+        $iconMap = [
+            'pdf' => 'fas fa-file-pdf',
+            'doc' => 'fas fa-file-word',
+            'docx' => 'fas fa-file-word',
+            'xls' => 'fas fa-file-excel',
+            'xlsx' => 'fas fa-file-excel',
+            'ppt' => 'fas fa-file-powerpoint',
+            'pptx' => 'fas fa-file-powerpoint',
+            'txt' => 'fas fa-file-alt',
+            'rtf' => 'fas fa-file-alt',
+            'zip' => 'fas fa-file-archive',
+            'rar' => 'fas fa-file-archive',
+            'jpg' => 'fas fa-file-image',
+            'jpeg' => 'fas fa-file-image',
+            'png' => 'fas fa-file-image',
+            'gif' => 'fas fa-file-image',
+            'webp' => 'fas fa-file-image',
+        ];
+
+        return $iconMap[$extension] ?? 'fas fa-file';
+    }
+
+    public function getDocumentTypeColor(string $extension): string
+    {
+        $colorMap = [
+            'pdf' => 'red',
+            'doc' => 'blue',
+            'docx' => 'blue',
+            'xls' => 'green',
+            'xlsx' => 'green',
+            'ppt' => 'orange',
+            'pptx' => 'orange',
+            'txt' => 'gray',
+            'rtf' => 'gray',
+            'zip' => 'purple',
+            'rar' => 'purple',
+            'jpg' => 'blue',
+            'jpeg' => 'blue',
+            'png' => 'blue',
+            'gif' => 'blue',
+            'webp' => 'blue',
+        ];
+
+        return $colorMap[$extension] ?? 'gray';
     }
 }

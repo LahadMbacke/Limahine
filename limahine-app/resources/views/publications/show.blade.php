@@ -176,6 +176,188 @@
                     </div>
                 </div>
             @endif
+
+            {{-- Section Documents Attachés --}}
+            @if($publication->hasDocuments())
+                <div class="mt-12 pt-8 border-t border-neutral-200">
+                    <h3 class="text-xl font-bold text-accent-900 mb-6 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 001 1h6a1 1 0 001-1V3a2 2 0 012 2v6.5a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 11.5V5zM7 7a1 1 0 011-1h1a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        Documents Attachés
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                            {{ $publication->getDocumentsCount() }}
+                        </span>
+                    </h3>
+                    
+                    {{-- Note informative --}}
+                    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-sm">
+                                <p class="text-blue-800 font-medium mb-1">Consultation en lecture seule</p>
+                                <p class="text-blue-700">Les documents sont présentés ci-dessous en mode lecture seule pour protéger la propriété intellectuelle de l'auteur. Le téléchargement et la copie sont désactivés.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Liste des documents avec visualisation intégrée --}}
+                    @foreach($publication->getFormattedDocuments() as $index => $document)
+                        <div class="mb-8 bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm" id="document-{{ $document['id'] }}">
+                            {{-- En-tête du document --}}
+                            <div class="bg-gradient-to-r 
+                                @if($document['type_color'] === 'red') from-red-50 to-red-100 border-red-200
+                                @elseif($document['type_color'] === 'blue') from-blue-50 to-blue-100 border-blue-200
+                                @elseif($document['type_color'] === 'green') from-green-50 to-green-100 border-green-200
+                                @elseif($document['type_color'] === 'orange') from-orange-50 to-orange-100 border-orange-200
+                                @elseif($document['type_color'] === 'purple') from-purple-50 to-purple-100 border-purple-200
+                                @else from-gray-50 to-gray-100 border-gray-200
+                                @endif
+                                px-6 py-4 border-b">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center 
+                                            @if($document['type_color'] === 'red') bg-red-100 text-red-600
+                                            @elseif($document['type_color'] === 'blue') bg-blue-100 text-blue-600
+                                            @elseif($document['type_color'] === 'green') bg-green-100 text-green-600
+                                            @elseif($document['type_color'] === 'orange') bg-orange-100 text-orange-600
+                                            @elseif($document['type_color'] === 'purple') bg-purple-100 text-purple-600
+                                            @else bg-gray-100 text-gray-600
+                                            @endif
+                                        ">
+                                            <i class="{{ $document['type_icon'] }} text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-accent-900">
+                                                {{ $document['name'] ?: $document['file_name'] }}
+                                            </h4>
+                                            <div class="flex items-center gap-4 text-sm text-accent-600">
+                                                <span class="flex items-center gap-1">
+                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
+                                                        @if($document['type_color'] === 'red') bg-red-100 text-red-800
+                                                        @elseif($document['type_color'] === 'blue') bg-blue-100 text-blue-800
+                                                        @elseif($document['type_color'] === 'green') bg-green-100 text-green-800
+                                                        @elseif($document['type_color'] === 'orange') bg-orange-100 text-orange-800
+                                                        @elseif($document['type_color'] === 'purple') bg-purple-100 text-purple-800
+                                                        @else bg-gray-100 text-gray-800
+                                                        @endif
+                                                    ">
+                                                        {{ strtoupper($document['extension']) }}
+                                                    </span>
+                                                </span>
+                                                <span>{{ $document['human_readable_size'] }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="toggleDocument({{ $document['id'] }})" 
+                                                class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
+                                                @if($document['type_color'] === 'red') text-red-700 bg-red-100 hover:bg-red-200
+                                                @elseif($document['type_color'] === 'blue') text-blue-700 bg-blue-100 hover:bg-blue-200
+                                                @elseif($document['type_color'] === 'green') text-green-700 bg-green-100 hover:bg-green-200
+                                                @elseif($document['type_color'] === 'orange') text-orange-700 bg-orange-100 hover:bg-orange-200
+                                                @elseif($document['type_color'] === 'purple') text-purple-700 bg-purple-100 hover:bg-purple-200
+                                                @else text-gray-700 bg-gray-100 hover:bg-gray-200
+                                                @endif
+                                                ">
+                                            <svg id="toggle-icon-{{ $document['id'] }}" class="w-4 h-4 mr-2 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span id="toggle-text-{{ $document['id'] }}">Afficher</span>
+                                        </button>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Lecture seule
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Contenu du document (initialement masqué) --}}
+                            <div id="document-content-{{ $document['id'] }}" class="hidden">
+                                <div class="document-viewer" data-document-id="{{ $document['id'] }}" data-document-type="{{ $document['extension'] }}" data-document-url="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}">
+                                    @if(in_array($document['extension'], ['pdf']))
+                                        {{-- Visualiseur PDF intégré --}}
+                                        <div class="relative bg-gray-50" style="height: 600px;">
+                                            <iframe src="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}#toolbar=0&navpanes=0&scrollbar=0" 
+                                                    class="w-full h-full border-0 document-iframe" 
+                                                    style="pointer-events: none; user-select: none;"
+                                                    oncontextmenu="return false;"
+                                                    data-document-id="{{ $document['id'] }}">
+                                            </iframe>
+                                            {{-- Overlay de protection --}}
+                                            <div class="absolute inset-0 pointer-events-none bg-transparent"></div>
+                                        </div>
+                                    @elseif(in_array($document['extension'], ['txt', 'rtf']))
+                                        {{-- Visualiseur de texte --}}
+                                        <div class="p-6 bg-gray-50">
+                                            <div class="bg-white border border-gray-200 rounded-lg p-6 max-h-96 overflow-y-auto">
+                                                <div class="prose prose-sm max-w-none" style="user-select: none;">
+                                                    <div id="text-content-{{ $document['id'] }}" class="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                                                        {{-- Le contenu sera chargé via AJAX --}}
+                                                        <div class="flex items-center justify-center py-8">
+                                                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                                                            <span class="ml-2 text-gray-600">Chargement du contenu...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif(in_array($document['extension'], ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                        {{-- Visualiseur d'images --}}
+                                        <div class="p-6 bg-gray-50">
+                                            <div class="text-center">
+                                                <img src="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}" 
+                                                     alt="{{ $document['name'] ?: $document['file_name'] }}"
+                                                     class="max-w-full h-auto mx-auto rounded-lg shadow-lg"
+                                                     style="user-select: none; pointer-events: none;"
+                                                     oncontextmenu="return false;"
+                                                     ondragstart="return false;">
+                                            </div>
+                                        </div>
+                                    @else
+                                        {{-- Message pour les autres types de fichiers --}}
+                                        <div class="p-8 text-center bg-gray-50">
+                                            <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center 
+                                                @if($document['type_color'] === 'red') bg-red-100 text-red-600
+                                                @elseif($document['type_color'] === 'blue') bg-blue-100 text-blue-600
+                                                @elseif($document['type_color'] === 'green') bg-green-100 text-green-600
+                                                @elseif($document['type_color'] === 'orange') bg-orange-100 text-orange-600
+                                                @elseif($document['type_color'] === 'purple') bg-purple-100 text-purple-600
+                                                @else bg-gray-100 text-gray-600
+                                                @endif
+                                            ">
+                                                <i class="{{ $document['type_icon'] }} text-2xl"></i>
+                                            </div>
+                                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Aperçu non disponible</h4>
+                                            <p class="text-gray-600 mb-4">
+                                                Ce type de fichier ({{ strtoupper($document['extension']) }}) ne peut pas être affiché directement dans le navigateur.
+                                            </p>
+                                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                                                <div class="flex items-start gap-3">
+                                                    <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <div class="text-sm text-left">
+                                                        <p class="text-blue-800 font-medium mb-1">Information</p>
+                                                        <p class="text-blue-700">Contactez l'auteur pour plus d'informations sur ce document.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 
@@ -589,6 +771,89 @@
             text-align: left;
         }
     }
+
+    /* Styles pour les documents intégrés */
+    .document-viewer {
+        position: relative;
+    }
+
+    .document-iframe {
+        border: none;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    /* Protection du contenu */
+    .document-viewer * {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        pointer-events: none !important;
+    }
+
+    .document-viewer iframe {
+        pointer-events: auto !important;
+    }
+
+    /* Overlay de protection pour les iframes */
+    .document-viewer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: transparent;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Animation pour l'affichage des documents */
+    #document-content-1, #document-content-2, #document-content-3, #document-content-4, #document-content-5 {
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Style pour le contenu texte non sélectionnable */
+    #text-content-1, #text-content-2, #text-content-3, #text-content-4, #text-content-5 {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        cursor: default;
+    }
+
+    /* Désactiver les liens et interactions dans les documents */
+    .document-viewer a,
+    .document-viewer button,
+    .document-viewer input,
+    .document-viewer textarea {
+        pointer-events: none !important;
+        cursor: default !important;
+    }
+
+    /* Protection contre l'impression */
+    @media print {
+        .document-viewer,
+        .document-iframe,
+        #text-content-1, #text-content-2, #text-content-3, #text-content-4, #text-content-5 {
+            display: none !important;
+        }
+    }
 </style>
 @endpush
 
@@ -734,6 +999,68 @@
             });
         }
     }
+
+    // Fonction pour afficher/masquer les documents
+    function toggleDocument(documentId) {
+        const content = document.getElementById('document-content-' + documentId);
+        const icon = document.getElementById('toggle-icon-' + documentId);
+        const text = document.getElementById('toggle-text-' + documentId);
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+            text.textContent = 'Masquer';
+            
+            // Charger le contenu du fichier texte si nécessaire
+            const textContent = document.getElementById('text-content-' + documentId);
+            if (textContent && textContent.innerHTML.includes('Chargement du contenu...')) {
+                loadTextContent(documentId);
+            }
+        } else {
+            content.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+            text.textContent = 'Afficher';
+        }
+    }
+
+    // Fonction pour charger le contenu des fichiers texte
+    function loadTextContent(documentId) {
+        const textContent = document.getElementById('text-content-' + documentId);
+        const documentViewer = document.querySelector(`[data-document-id="${documentId}"]`);
+        const documentUrl = documentViewer.getAttribute('data-document-url');
+        
+        fetch(documentUrl + '?text=1')
+            .then(response => response.text())
+            .then(data => {
+                textContent.textContent = data;
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement du contenu:', error);
+                textContent.innerHTML = '<div class="text-red-600">Erreur lors du chargement du contenu du fichier.</div>';
+            });
+    }
+
+    // Protection contre le clic droit et les raccourcis
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.closest('.document-viewer')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        // Désactiver Ctrl+S, Ctrl+P, F12 sur les documents
+        if (e.target.closest('.document-viewer')) {
+            if ((e.ctrlKey && (e.key === 's' || e.key === 'p')) || e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+
+    // Message de protection dans la console
+    console.log('%cContenu Protégé', 'color: red; font-size: 20px; font-weight: bold;');
+    console.log('%cCes documents sont protégés par des droits d\'auteur. Le téléchargement, la copie et la distribution non autorisés sont interdits.', 'color: orange; font-size: 14px;');
 </script>
 @endpush
 

@@ -149,4 +149,150 @@ class HomeController extends Controller
 
         return view('publications.show', compact('publication', 'relatedPublications'));
     }
+
+    public function viewDocument(Publication $publication, $documentId)
+    {
+        // Vérifier que la publication est publiée
+        if (!$publication->is_published) {
+            abort(404);
+        }
+
+        // Récupérer le document spécifique
+        $document = $publication->getMedia('documents')->find($documentId);
+        
+        if (!$document) {
+            abort(404, 'Document non trouvé');
+        }
+
+        // Obtenir le chemin du fichier
+        $filePath = $document->getPath();
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'Fichier non trouvé');
+        }
+
+        // Détecter le type MIME
+        $mimeType = $document->mime_type;
+        $filename = $document->file_name;
+
+        // Pour les PDF, forcer l'affichage inline dans le navigateur
+        if ($mimeType === 'application/pdf') {
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ]);
+        }
+
+        // Pour les documents Office (Word, Excel, PowerPoint), utiliser Office Online Viewer
+        if (in_array($mimeType, [
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        ])) {
+            // Créer une URL temporaire sécurisée pour le document
+            $documentUrl = route('publications.documents.serve', [
+                'publication' => $publication->id,
+                'document' => $documentId
+            ]);
+            
+            // Rediriger vers Office Online Viewer
+            $viewerUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' . urlencode(url($documentUrl));
+            
+            return view('publications.document-viewer', [
+                'publication' => $publication,
+                'document' => $document,
+                'viewerUrl' => $viewerUrl,
+                'documentType' => 'office'
+            ]);
+        }
+
+        // Pour les fichiers texte, afficher directement le contenu
+        if (in_array($mimeType, ['text/plain', 'application/rtf'])) {
+            $content = file_get_contents($filePath);
+            
+            return view('publications.document-viewer', [
+                'publication' => $publication,
+                'document' => $document,
+                'content' => $content,
+                'documentType' => 'text'
+            ]);
+        }
+
+        // Pour les archives, afficher les informations du fichier
+        if (in_array($mimeType, ['application/zip', 'application/x-rar-compressed'])) {
+            return view('publications.document-viewer', [
+                'publication' => $publication,
+                'document' => $document,
+                'documentType' => 'archive'
+            ]);
+        }
+
+        // Par défaut, essayer d'afficher le fichier dans le navigateur
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'X-Frame-Options' => 'SAMEORIGIN',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ]);
+    }
+
+    public function serveDocument(Publication $publication, $documentId, Request $request)
+    {
+        // Vérifier que la publication est publiée
+        if (!$publication->is_published) {
+            abort(404);
+        }
+
+        // Récupérer le document spécifique
+        $document = $publication->getMedia('documents')->find($documentId);
+        
+        if (!$document) {
+            abort(404, 'Document non trouvé');
+        }
+
+        // Obtenir le chemin du fichier
+        $filePath = $document->getPath();
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'Fichier non trouvé');
+        }
+
+        // Si c'est une demande de contenu texte
+        if ($request->has('text') && in_array($document->mime_type, ['text/plain', 'application/rtf'])) {
+            $content = file_get_contents($filePath);
+            
+            // Nettoyer le contenu RTF basique (enlever les balises RTF principales)
+            if ($document->mime_type === 'application/rtf') {
+                $content = strip_tags($content);
+                $content = preg_replace('/\\\\[a-z]+[0-9]*\s?/', '', $content);
+                $content = str_replace(['{', '}'], '', $content);
+                $content = trim($content);
+            }
+            
+            return response($content, 200, [
+                'Content-Type' => 'text/plain; charset=utf-8',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ]);
+        }
+
+        // Servir le fichier directement pour les visualiseurs externes
+        return response()->file($filePath, [
+            'Content-Type' => $document->mime_type,
+            'Content-Disposition' => 'inline; filename="' . $document->file_name . '"',
+            'X-Frame-Options' => 'SAMEORIGIN',
+            'Cache-Control' => 'public, max-age=3600',
+            'Access-Control-Allow-Origin' => '*'
+        ]);
+    }
 }

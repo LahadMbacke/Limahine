@@ -23,6 +23,10 @@ Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheu
 // Routes pour les publications individuelles
 Route::get('/publications/{publication:slug}', [HomeController::class, 'showPublication'])->name('publications.show');
 
+// Routes pour les documents des publications
+Route::get('/publications/{publication}/documents/{document}/view', [HomeController::class, 'viewDocument'])->name('publications.documents.view');
+Route::get('/publications/{publication}/documents/{document}/serve', [HomeController::class, 'serveDocument'])->name('publications.documents.serve');
+
 // Routes pour la section Découverte - Fils de Cheikh Ahmadou Bamba
 Route::get('/decouverte', [FilsCheikhController::class, 'index'])->name('decouverte.index');
 Route::get('/decouverte/{filsCheikh:slug}', [FilsCheikhController::class, 'show'])->name('decouverte.show');
