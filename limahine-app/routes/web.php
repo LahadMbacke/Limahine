@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\VideoTrailerController;
+use App\Http\Controllers\FilsCheikhController;
 
 // Routes pour la gestion des langues
 Route::post('/language/switch', [LanguageController::class, 'switch'])->name('language.switch');
@@ -20,6 +21,11 @@ Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheu
 
 // Routes pour les publications individuelles
 Route::get('/publications/{publication:slug}', [HomeController::class, 'showPublication'])->name('publications.show');
+
+// Routes pour la section Découverte - Fils de Cheikh Ahmadou Bamba
+Route::get('/decouverte', [FilsCheikhController::class, 'index'])->name('decouverte.index');
+Route::get('/decouverte/{filsCheikh:slug}', [FilsCheikhController::class, 'show'])->name('decouverte.show');
+Route::get('/decouverte/{filsCheikh:slug}/publications', [FilsCheikhController::class, 'publications'])->name('decouverte.publications');
 
 // Routes pour les Vidéo
 Route::get('/trailers', [VideoTrailerController::class, 'index'])->name('trailers.index');

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PublicationResource\Pages;
 use App\Models\Publication;
 use App\Models\User;
+use App\Models\FilsCheikh;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -53,7 +54,15 @@ class PublicationResource extends Resource
                         Forms\Components\Select::make('category')
                             ->label('Catégorie')
                             ->options(Publication::getCategories())
-                            ->required(),
+                            ->required()
+                            ->live(),
+
+                        Forms\Components\Select::make('fils_cheikh_id')
+                            ->label('Fils de Cheikh Ahmadou Bamba')
+                            ->relationship('filsCheikh', 'name.fr')
+                            ->searchable()
+                            ->preload()
+                            ->visible(fn (callable $get) => $get('category') === 'decouverte'),
 
                         Forms\Components\Select::make('author_id')
                             ->label('Auteur')
@@ -145,6 +154,11 @@ class PublicationResource extends Resource
                     ->label('Catégorie')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => Publication::getCategories()[$state] ?? $state),
+
+                Tables\Columns\TextColumn::make('filsCheikh.name.fr')
+                    ->label('Fils de Cheikh')
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('author.name')
                     ->label('Auteur')

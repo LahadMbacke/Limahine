@@ -27,7 +27,8 @@ class Publication extends Model implements HasMedia
         'author_id',
         'reading_time',
         'tags',
-        'featured'
+        'featured',
+        'fils_cheikh_id'
     ];
 
     protected $translatable = [
@@ -48,6 +49,11 @@ class Publication extends Model implements HasMedia
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function filsCheikh(): BelongsTo
+    {
+        return $this->belongsTo(FilsCheikh::class, 'fils_cheikh_id');
     }
 
     // Scopes
@@ -77,7 +83,8 @@ class Publication extends Model implements HasMedia
             'khassaids' => 'Khassaïds',
             'philosophy' => 'Philosophie',
             'histoire' => 'Histoire',
-            'temoignages' => 'Témoignages'
+            'temoignages' => 'Témoignages',
+            'decouverte' => 'Découverte - Fils de Cheikh Ahmadou Bamba'
         ];
     }
 
