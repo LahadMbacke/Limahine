@@ -75,6 +75,27 @@ class Temoignage extends Model implements HasMedia
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
     }
 
+    // Méthodes sécurisées pour obtenir les URLs des médias
+    public function getSecureAuthorPhotoUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'author_photo', $conversion);
+    }
+
+    public function getSecureGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+    }
+
+    public function getSecureAudioUrls(): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'audio');
+    }
+
+    public function hasSecureAuthorPhoto(): bool
+    {
+        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'author_photo');
+    }
+
     // Helper methods pour les traductions
     public function getLocalizedTitle()
     {

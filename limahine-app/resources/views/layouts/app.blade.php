@@ -59,6 +59,44 @@
     </style>
 
     @stack('styles')
+
+    <!-- Protection contre le clic droit et les raccourcis clavier -->
+    <style>
+        /* Désactiver la sélection de texte */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Permettre la sélection pour les inputs et textareas */
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
+        /* Masquer les éléments en cas d'outils de développement ouverts */
+        .dev-tools-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body class="antialiased">
     <!-- Page Loader -->
@@ -341,6 +379,130 @@
     </footer>
 
     @stack('scripts')
+
+    <!-- Scripts de protection contre l'inspection et le clic droit -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Protection contre le clic droit
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Protection contre la sélection de texte par glisser-déposer
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Protection contre les raccourcis clavier de développement
+            document.addEventListener('keydown', function(e) {
+                // F12 (Outils de développement)
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+Shift+I (Outils de développement)
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+Shift+C (Inspecteur d'éléments)
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+Shift+J (Console)
+                if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+U (Afficher la source)
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+S (Sauvegarder)
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+A (Sélectionner tout) - sauf dans les inputs
+                if (e.ctrlKey && e.key === 'a' && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+P (Imprimer)
+                if (e.ctrlKey && e.key === 'p') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Détection des outils de développement (méthode basique)
+            let devtools = {open: false, orientation: null};
+            const threshold = 160;
+
+            setInterval(function() {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        // Masquer le contenu ou rediriger
+                        document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:999999;"><div style="text-align:center;"><h1>Accès non autorisé</h1><p>Veuillez fermer les outils de développement pour continuer.</p></div></div>';
+                    }
+                } else {
+                    devtools.open = false;
+                }
+            }, 500);
+
+            // Protection contre l'impression
+            window.addEventListener('beforeprint', function(e) {
+                e.preventDefault();
+                alert('L\'impression de ce contenu n\'est pas autorisée.');
+                return false;
+            });
+
+            // Désactiver le glisser-déposer d'images
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Protection contre la copie
+            document.addEventListener('copy', function(e) {
+                e.clipboardData.setData('text/plain', '');
+                e.preventDefault();
+                return false;
+            });
+
+            // Masquer le contenu lors de tentatives de capture d'écran (Chrome)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    document.body.style.filter = 'blur(10px)';
+                } else {
+                    document.body.style.filter = 'none';
+                }
+            });
+
+            // Console warning
+            console.clear();
+            console.log('%cSTOP!', 'color: red; font-size: 50px; font-weight: bold;');
+            console.log('%cCeci est une fonctionnalité du navigateur destinée aux développeurs. Si quelqu\'un vous a dit de copier-coller quelque chose ici pour activer une fonctionnalité ou "pirater" le compte de quelqu\'un d\'autre, il s\'agit d\'une arnaque et cela lui donnera accès à votre compte.', 'color: red; font-size: 16px;');
+
+        })();
+    </script>
 
     <!-- Scripts globaux -->
     <script>

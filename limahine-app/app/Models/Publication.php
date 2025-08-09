@@ -8,6 +8,7 @@ use Spatie\Translatable\HasTranslations;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Publication extends Model implements HasMedia
@@ -125,5 +126,62 @@ class Publication extends Model implements HasMedia
 
         $this->addMediaCollection('audio')
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
+    }
+
+    // Conversions des médias avec protection
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+              ->width(300)
+              ->height(300)
+              ->quality(70)
+              ->nonQueued()
+              ->performOnCollections('featured_image', 'gallery');
+
+        $this->addMediaConversion('preview')
+              ->width(800)
+              ->height(600)
+              ->quality(60)
+              ->nonQueued()
+              ->performOnCollections('featured_image', 'gallery');
+
+        // Conversion avec filigrane pour les images sensibles
+        $this->addMediaConversion('watermarked')
+              ->width(1200)
+              ->height(900)
+              ->quality(50)
+              ->nonQueued()
+              ->performOnCollections('featured_image', 'gallery');
+    }
+
+    // Méthodes sécurisées pour obtenir les URLs des médias
+    public function getSecureFeaturedImageUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'featured_image', $conversion);
+    }
+
+    public function getSecureGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+    }
+
+    public function getSecureDocumentUrls(): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'documents');
+    }
+
+    public function getSecureAudioUrls(): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'audio');
+    }
+
+    public function hasSecureFeaturedImage(): bool
+    {
+        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'featured_image');
+    }
+
+    public function hasSecureGallery(): bool
+    {
+        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'gallery');
     }
 }

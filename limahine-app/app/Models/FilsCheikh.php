@@ -103,6 +103,32 @@ class FilsCheikh extends Model implements HasMedia
               ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
+    // Méthodes sécurisées pour obtenir les URLs des médias
+    public function getSecureCoverImageUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'cover_image', $conversion);
+    }
+
+    public function getSecurePortraitUrl(string $conversion = ''): string
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureUrl($this, 'portrait', $conversion);
+    }
+
+    public function getSecureGalleryUrls(string $conversion = ''): array
+    {
+        return \App\Helpers\SecureMediaHelper::getSecureMediaCollection($this, 'gallery', $conversion);
+    }
+
+    public function hasSecureCoverImage(): bool
+    {
+        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'cover_image');
+    }
+
+    public function hasSecurePortrait(): bool
+    {
+        return \App\Helpers\SecureMediaHelper::hasSecureMedia($this, 'portrait');
+    }
+
     // Méthode pour obtenir l'âge au décès ou l'âge actuel
     public function getAge()
     {
