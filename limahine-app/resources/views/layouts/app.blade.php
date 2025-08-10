@@ -33,6 +33,8 @@
     @if(!request()->is('admin*') && !request()->is('filament*'))
     <!-- CSS de protection pour le front office -->
     <link rel="stylesheet" href="{{ asset('css/protection.css') }}">
+    <!-- CSS pour supprimer les icônes automatiques -->
+    <link rel="stylesheet" href="{{ asset('css/clean-icons.css') }}">
     @endif
 
     <!-- Style inline pour éviter FOUC -->
@@ -128,10 +130,38 @@
             -ms-user-select: none !important;
             user-select: none !important;
         }
-        @endif
+
+        /* Permettre la sélection pour les inputs et textareas en mode protection */
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text !important;
             -moz-user-select: text !important;
             -ms-user-select: text !important;
             user-select: text !important;
+        }
+
+        /* Supprimer les icônes automatiques des liens */
+        a::after,
+        a::before,
+        [href]::after,
+        [href]::before {
+            content: none !important;
+            display: none !important;
+        }
+
+        /* Supprimer les icônes d'extension de navigateur */
+        a .external-link-icon,
+        a .link-icon,
+        .external-link-indicator,
+        .link-indicator {
+            display: none !important;
+        }
+
+        /* Nettoyer les pseudo-éléments ajoutés par les extensions */
+        a[href^="http"]::after,
+        a[href^="https"]::after,
+        a[target="_blank"]::after {
+            content: none !important;
+            display: none !important;
         }
         @else
         /* Mode développement : sélection de texte autorisée partout */

@@ -1,0 +1,170 @@
+/**
+ * CSS pour supprimer les icônes automatiques des liens
+ * Appliqué globalement pour nettoyer l'interface
+ */
+
+/* Supprimer TOUTES les icônes automatiques des liens */
+a::after,
+a::before,
+[href]::after,
+[href]::before,
+a *::after,
+a *::before {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-image: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Supprimer les icônes spécifiques aux liens externes */
+a[href^="http"]::after,
+a[href^="https"]::after,
+a[href^="//"]::after,
+a[target="_blank"]::after,
+a[rel*="external"]::after,
+a[rel*="noopener"]::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Masquer les classes d'icônes courantes */
+a .external-link-icon,
+a .link-icon,
+a .external-icon,
+a .url-icon,
+.external-link-indicator,
+.link-indicator,
+[class*="external-icon"],
+[class*="link-icon"],
+[class*="url-icon"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Supprimer les icônes FontAwesome automatiques */
+a .fa-external-link,
+a .fa-external-link-alt,
+a .fa-external-link-square,
+a .fa-link,
+a .fa-arrow-up-right-from-square,
+a .fas.fa-external-link-alt,
+a .far.fa-external-link-alt {
+    display: none !important;
+}
+
+/* Masquer les icônes Unicode courantes */
+a::after[content="↗"],
+a::after[content="⬆"],
+a::after[content="🔗"],
+a::after[content="⤴"] {
+    content: none !important;
+    display: none !important;
+}
+
+/* Protection contre les styles injectés par extensions */
+a > span[style*="background-image"],
+a > span[style*="content:"],
+a > *[class*="icon"]:last-child,
+a > svg:last-child:not([class]),
+a > i:last-child:not([class]) {
+    display: none !important;
+}
+
+/* Nettoyer les attributs data- qui ajoutent des icônes */
+a[data-external]::after,
+a[data-icon]::after,
+a[data-external-icon]::after,
+a[data-link-icon]::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Forcer la suppression des pseudo-éléments sur tous les enfants des liens */
+a * {
+    position: relative;
+}
+
+a *::after,
+a *::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Styles spécifiques pour différents navigateurs */
+/* Chrome/Safari */
+a::-webkit-any-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Firefox */
+a:-moz-any-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Edge */
+a:-ms-any-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Protection globale contre toute icône automatique */
+*[href]::after,
+*[href]::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Masquer les éléments ajoutés dynamiquement par JavaScript */
+.auto-generated-icon,
+.browser-generated-icon,
+.extension-icon {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Protection contre les styles CSS injectés */
+a[style*="::after"],
+a[style*="::before"] {
+    position: relative !important;
+}
+
+/* Forcer le nettoyage des icônes sur les liens Limahine */
+.nav-link::after,
+.nav-link::before,
+.mobile-nav-link::after,
+.mobile-nav-link::before,
+.footer-link::after,
+.footer-link::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Protection spéciale pour les boutons et liens d'action */
+button::after,
+button::before,
+.btn::after,
+.btn::before,
+[role="button"]::after,
+[role="button"]::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Nettoyage final - force la suppression */
+a, [href] {
+    position: relative;
+}
+
+a > *:last-child:empty,
+[href] > *:last-child:empty {
+    display: none !important;
+}

@@ -158,8 +158,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($featuredPublications as $publication)
                 <article class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                    @if($publication->hasSecureFeaturedImage())
-                    <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $publication->getSecureFeaturedImageUrl('preview') }}')"></div>
+                    @if($publication->hasFeaturedImage())
+                    <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $publication->getFeaturedImageUrl() }}')"></div>
                     @else
                     <div class="h-48 bg-gradient-to-br from-amber-400 to-orange-500"></div>
                     @endif

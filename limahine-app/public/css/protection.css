@@ -276,3 +276,60 @@ input, textarea, select, [contenteditable] {
     -ms-user-select: text !important;
     user-select: text !important;
 }
+
+/* Supprimer toutes les icônes automatiques des liens */
+a::after,
+a::before,
+[href]::after,
+[href]::before {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-image: none !important;
+}
+
+/* Supprimer les icônes d'extensions de navigateur */
+a .external-link-icon,
+a .link-icon,
+a .external-icon,
+.external-link-indicator,
+.link-indicator,
+[class*="external-icon"],
+[class*="link-icon"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Nettoyer spécifiquement les liens externes */
+a[href^="http"]::after,
+a[href^="https"]::after,
+a[href^="//"]::after,
+a[target="_blank"]::after,
+a[rel*="external"]::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+}
+
+/* Empêcher l'ajout d'icônes par JavaScript */
+a[data-external-icon]::after,
+a[data-link-icon]::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Masquer les icônes FontAwesome automatiques */
+a .fa-external-link,
+a .fa-external-link-alt,
+a .fa-link,
+a .fa-arrow-up-right-from-square {
+    display: none !important;
+}
+
+/* Protection contre les styles injectés par les extensions */
+a > span[style*="background-image"],
+a > span[style*="content:"],
+a > *[class*="icon"]:last-child {
+    display: none !important;
+}
