@@ -1,0 +1,278 @@
+/**
+ * CSS de protection avancée pour Limahine
+ * Protection contre les interactions non autorisées
+ */
+
+/* Protection globale contre la sélection (sauf éléments interactifs) */
+*:not(input):not(textarea):not([contenteditable="true"]) {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Autoriser la sélection pour les éléments de formulaire */
+input, 
+textarea, 
+select, 
+[contenteditable="true"],
+[role="textbox"] {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Protection contre le glisser-déposer d'images et de médias */
+img, 
+video, 
+audio, 
+svg,
+canvas {
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* Autoriser les clics sur les liens, boutons et éléments interactifs */
+a, 
+button, 
+input, 
+textarea, 
+select, 
+[role="button"],
+[role="link"],
+[tabindex],
+.clickable {
+    pointer-events: auto !important;
+}
+
+/* Protection contre l'impression */
+@media print {
+    * {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    body::before {
+        content: "🔒 IMPRESSION NON AUTORISÉE - LIMAHINE\A\AFiche technique protégée par des droits d'auteur\A\APour plus d'informations, contactez-nous." !important;
+        white-space: pre !important;
+        display: block !important;
+        visibility: visible !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        font-size: 24px !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        background: #ffffff !important;
+        color: #dc2626 !important;
+        padding: 2rem !important;
+        border: 3px solid #dc2626 !important;
+        border-radius: 8px !important;
+        font-family: 'Arial', sans-serif !important;
+        z-index: 999999 !important;
+    }
+    
+    body::after {
+        content: "© " attr(data-year) " Limahine. Tous droits réservés." !important;
+        display: block !important;
+        visibility: visible !important;
+        position: fixed !important;
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        font-size: 12px !important;
+        color: #6b7280 !important;
+        font-family: 'Arial', sans-serif !important;
+    }
+}
+
+/* Protection contre la capture d'écran par flou (limitée) */
+@media (prefers-reduced-motion: no-preference) {
+    body.screenshot-protection {
+        filter: blur(2px) !important;
+        transition: filter 0.1s ease !important;
+    }
+}
+
+/* Masquage des éléments sensibles lors de la perte de focus */
+.sensitive-content {
+    transition: opacity 0.3s ease !important;
+}
+
+body.window-unfocused .sensitive-content {
+    opacity: 0.1 !important;
+    filter: blur(5px) !important;
+}
+
+/* Protection contre l'overlay malveillant */
+.protection-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 999998 !important;
+    pointer-events: none !important;
+    background: transparent !important;
+}
+
+/* Styles pour les messages de protection */
+.protection-message {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    max-width: 300px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: white !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    z-index: 10000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    animation: slideInFromRight 0.3s ease-out !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.protection-message::before {
+    content: "🛡️" !important;
+    margin-right: 8px !important;
+    font-size: 16px !important;
+}
+
+/* Animation pour les messages de protection */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+    }
+    to {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+    }
+}
+
+@keyframes slideOutToRight {
+    from {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+    }
+    to {
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+    }
+}
+
+/* Protection contre les modificateurs CSS malveillants */
+html, body {
+    overflow-x: hidden !important;
+}
+
+/* Désactiver les animations CSS pour certains éléments sensibles */
+.no-animation,
+.no-animation * {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
+
+/* Protection pour les iframes (si applicable) */
+iframe {
+    pointer-events: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Styles de sécurité pour les liens externes */
+a[href^="http"]:not([href*="limahine"]):not([href*="localhost"]) {
+    position: relative !important;
+}
+
+a[href^="http"]:not([href*="limahine"]):not([href*="localhost"])::after {
+    content: " 🔗" !important;
+    font-size: 0.8em !important;
+    opacity: 0.7 !important;
+}
+
+/* Protection contre les overlay malveillants */
+[style*="position: fixed"],
+[style*="position:fixed"] {
+    z-index: auto !important;
+}
+
+/* Styles pour la page de blocage */
+.limahine-block-page {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    z-index: 999999 !important;
+    animation: fadeInBlock 0.3s ease-in-out !important;
+}
+
+@keyframes fadeInBlock {
+    from {
+        opacity: 0 !important;
+        transform: scale(0.95) !important;
+    }
+    to {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+    }
+}
+
+/* Responsive pour les messages de protection */
+@media (max-width: 768px) {
+    .protection-message {
+        top: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+        max-width: none !important;
+        font-size: 13px !important;
+        padding: 10px 14px !important;
+    }
+}
+
+/* Protection contre les modifications de styles */
+.limahine-protected {
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Force la protection même avec !important externe */
+* {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Exception pour les éléments de formulaire */
+input, textarea, select, [contenteditable] {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}

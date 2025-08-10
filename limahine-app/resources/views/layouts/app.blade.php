@@ -29,6 +29,11 @@
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    @if(!request()->is('admin*') && !request()->is('filament*'))
+    <!-- CSS de protection pour le front office -->
+    <link rel="stylesheet" href="{{ asset('css/protection.css') }}">
+    @endif
 
     <!-- Style inline pour éviter FOUC -->
     <style>
@@ -63,9 +68,9 @@
 
     @stack('styles')
 
-    <!-- Protection contre le clic droit et les raccourcis clavier - DÉSACTIVÉE EN DÉVELOPPEMENT -->
+    <!-- Protection contre le clic droit et les raccourcis clavier - ACTIVÉE SUR LE FRONT OFFICE -->
     <style>
-        @if(config('app.env') === 'production')
+        @if(!request()->is('admin*') && !request()->is('filament*'))
         /* Désactiver la sélection de texte */
         * {
             -webkit-user-select: none;
@@ -79,6 +84,51 @@
         /* Permettre la sélection pour les inputs et textareas */
         input, textarea, [contenteditable="true"] {
             -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
+        /* Protection contre l'impression */
+        @media print {
+            * {
+                display: none !important;
+            }
+            body::before {
+                content: "Impression non autorisée - Limahine" !important;
+                display: block !important;
+                font-size: 24px !important;
+                text-align: center !important;
+                margin-top: 50vh !important;
+                transform: translateY(-50%) !important;
+            }
+        }
+
+        /* Désactiver le glisser-déposer */
+        img, video, audio {
+            -webkit-user-drag: none !important;
+            -khtml-user-drag: none !important;
+            -moz-user-drag: none !important;
+            -o-user-drag: none !important;
+            user-drag: none !important;
+            pointer-events: none !important;
+        }
+
+        /* Permettre les clics sur les liens et boutons */
+        a, button, input, textarea, select {
+            pointer-events: auto !important;
+        }
+
+        /* Protection contre la capture d'écran (partiellement) */
+        body {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -khtml-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+        @endif
             -moz-user-select: text !important;
             -ms-user-select: text !important;
             user-select: text !important;
@@ -381,9 +431,14 @@
 
     @stack('scripts')
 
-    <!-- Scripts de protection contre l'inspection et le clic droit - DÉSACTIVÉS EN DÉVELOPPEMENT -->
+    @if(!request()->is('admin*') && !request()->is('filament*'))
+    <!-- Script de protection avancée pour le front office -->
+    <script src="{{ asset('js/protection.js') }}" defer></script>
+    @endif
+
+    <!-- Scripts de protection contre l'inspection et le clic droit - ACTIVÉS SUR LE FRONT OFFICE -->
     <script>
-        @if(config('app.env') === 'production')
+        @if(!request()->is('admin*') && !request()->is('filament*'))
         (function() {
             'use strict';
 
@@ -448,6 +503,24 @@
                     e.preventDefault();
                     return false;
                 }
+
+                // Alt+F4 (Fermer la fenêtre) - Protection supplémentaire
+                if (e.altKey && e.key === 'F4') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+Shift+K (Console Firefox)
+                if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ctrl+Shift+E (Réseau Firefox)
+                if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                    e.preventDefault();
+                    return false;
+                }
             });
 
             // Détection des outils de développement (méthode basique)
@@ -460,12 +533,29 @@
                     if (!devtools.open) {
                         devtools.open = true;
                         // Masquer le contenu ou rediriger
-                        document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:999999;"><div style="text-align:center;"><h1>Accès non autorisé</h1><p>Veuillez fermer les outils de développement pour continuer.</p></div></div>';
+                        document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #1f2937 0%, #111827 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;z-index:999999;"><div style="text-align:center;max-width:500px;padding:2rem;"><h1 style="font-size:2rem;margin-bottom:1rem;color:#f59e0b;">🔒 Accès Restreint</h1><p style="font-size:1.1rem;line-height:1.6;color:#d1d5db;margin-bottom:1.5rem;">Pour des raisons de sécurité et de protection du contenu, l\'utilisation des outils de développement n\'est pas autorisée sur cette plateforme.</p><p style="font-size:0.9rem;color:#9ca3af;">Veuillez fermer les outils de développement pour continuer votre navigation.</p></div></div>';
                     }
                 } else {
                     devtools.open = false;
                 }
             }, 500);
+
+            // Protection avancée contre l'ouverture de la console
+            let consoleOpenTime = 0;
+            setInterval(function() {
+                const startTime = performance.now();
+                console.log('');
+                const endTime = performance.now();
+                
+                if (endTime - startTime > 100) {
+                    if (consoleOpenTime === 0) {
+                        consoleOpenTime = Date.now();
+                        document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;z-index:999999;"><div style="text-align:center;max-width:500px;padding:2rem;"><h1 style="font-size:2rem;margin-bottom:1rem;">⚠️ Console Détectée</h1><p style="font-size:1.1rem;line-height:1.6;margin-bottom:1.5rem;">L\'accès à la console développeur a été détecté et bloqué.</p><p style="font-size:0.9rem;opacity:0.8;">Fermez la console pour continuer.</p></div></div>';
+                    }
+                } else {
+                    consoleOpenTime = 0;
+                }
+            }, 1000);
 
             // Protection contre l'impression
             window.addEventListener('beforeprint', function(e) {
@@ -500,14 +590,42 @@
 
             // Console warning
             console.clear();
-            console.log('%cSTOP!', 'color: red; font-size: 50px; font-weight: bold;');
-            console.log('%cCeci est une fonctionnalité du navigateur destinée aux développeurs. Si quelqu\'un vous a dit de copier-coller quelque chose ici pour activer une fonctionnalité ou "pirater" le compte de quelqu\'un d\'autre, il s\'agit d\'une arnaque et cela lui donnera accès à votre compte.', 'color: red; font-size: 16px;');
+            console.log('%c⚠️ ARRÊT !', 'color: #dc2626; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);');
+            console.log('%c🔒 Zone Sécurisée - Limahine', 'color: #f59e0b; font-size: 24px; font-weight: bold;');
+            console.log('%cCeci est une fonctionnalité du navigateur destinée aux développeurs.', 'color: #dc2626; font-size: 16px; font-weight: bold;');
+            console.log('%c⚠️ ATTENTION : Si quelqu\'un vous a demandé de copier-coller du code ici, il s\'agit très probablement d\'une tentative d\'arnaque !', 'color: #dc2626; font-size: 14px;');
+            console.log('%c🛡️ Cette action pourrait compromettre votre sécurité et donner accès à vos données personnelles.', 'color: #dc2626; font-size: 14px;');
+            console.log('%c📞 En cas de doute, contactez notre support technique.', 'color: #059669; font-size: 14px; font-weight: bold;');
+            
+            // Protection contre les tentatives de manipulation de la console
+            Object.defineProperty(window, 'console', {
+                get: function() {
+                    throw new Error('Accès à la console non autorisé');
+                },
+                set: function() {
+                    throw new Error('Modification de la console non autorisée');
+                }
+            });
+
+            // Protection contre l'auto-execution de scripts
+            let alertShown = false;
+            const originalEval = window.eval;
+            window.eval = function() {
+                if (!alertShown) {
+                    alertShown = true;
+                    alert('🚨 Tentative d\'exécution de code détectée ! Pour votre sécurité, cette action a été bloquée.');
+                }
+                throw new Error('Exécution de code externe bloquée pour des raisons de sécurité');
+            };
+
+            // Protection contre les tentatives de redéfinition
+            Object.freeze(window.eval);
+            Object.freeze(console);
 
         })();
         @else
-        // Mode développement : outils de développement autorisés
-        console.log('%cMode développement activé', 'color: green; font-size: 16px; font-weight: bold;');
-        console.log('%cLes outils de développement sont autorisés pour le diagnostic.', 'color: green; font-size: 14px;');
+        // Mode administration : outils de développement autorisés
+        console.log('%cMode administration - Outils de développement autorisés', 'color: blue; font-size: 16px; font-weight: bold;');
         @endif
     </script>
 
