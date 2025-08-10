@@ -269,7 +269,7 @@
                    class="bg-white text-amber-600 hover:bg-amber-50 px-8 py-3 rounded-full font-semibold transition-colors">
                     Lire les Témoignages
                 </a>
-             
+
             </div>
         </div>
     </section>

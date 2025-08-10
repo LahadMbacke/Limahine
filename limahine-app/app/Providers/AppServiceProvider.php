@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,11 @@ class AppServiceProvider extends ServiceProvider
         } else {
             App::setLocale(config('app.locale', 'fr'));
         }
+
+        // Enregistrer l'événement pour le transfert automatique vers FTP
+        \Event::listen(
+            \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded::class,
+            \App\Listeners\TransferMediaToFtp::class
+        );
     }
 }

@@ -7,26 +7,26 @@
     {{-- Hero Section --}}
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <!-- Background spirituel -->
-        <div class="absolute inset-0 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50"></div>
 
         <!-- Motifs géométriques -->
         <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-teal-400 rounded-full"></div>
-            <div class="absolute top-1/3 right-1/4 w-24 h-24 border-2 border-cyan-400 rotate-45"></div>
-            <div class="absolute bottom-1/4 left-1/3 w-20 h-20 border-2 border-blue-400 rounded-full"></div>
+            <div class="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-amber-400 rounded-full"></div>
+            <div class="absolute top-1/3 right-1/4 w-24 h-24 border-2 border-yellow-400 rotate-45"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-20 h-20 border-2 border-orange-400 rounded-full"></div>
         </div>
 
         <div class="relative z-10 container mx-auto px-6 text-center">
             <div class="max-w-5xl mx-auto">
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-teal-900 mb-8">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-amber-900 mb-8">
                     Philosophie
                 </h1>
 
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-light text-teal-800 mb-8 leading-relaxed">
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-light text-amber-800 mb-8 leading-relaxed">
                     Les Fondements Spirituels de la Voie Mouride
                 </h2>
 
-                <p class="text-xl md:text-2xl text-teal-700 max-w-4xl mx-auto mb-12 leading-relaxed">
+                <p class="text-xl md:text-2xl text-amber-700 max-w-4xl mx-auto mb-12 leading-relaxed">
                     Exploration des fondements spirituels, éducatifs et éthiques portés par
                     <span class="font-semibold">Cheikh Ahmadou Bamba Mbacké</span>,
                     ainsi que les grandes orientations de la tarîqa mouride.
@@ -34,13 +34,13 @@
 
                 <!-- Navigation des sections -->
                 <div class="flex flex-wrap justify-center gap-4 mb-16">
-                    <a href="#fondements" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-medium transition-colors">
+                    <a href="#fondements" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-full font-medium transition-colors">
                         Fondements
                     </a>
-                    <a href="#enseignements" class="bg-white hover:bg-teal-50 text-teal-800 border-2 border-teal-600 px-6 py-3 rounded-full font-medium transition-colors">
+                    <a href="#enseignements" class="bg-white hover:bg-amber-50 text-amber-800 border-2 border-amber-600 px-6 py-3 rounded-full font-medium transition-colors">
                         Enseignements
                     </a>
-                    <a href="#pratiques" class="bg-white hover:bg-teal-50 text-teal-800 border-2 border-teal-600 px-6 py-3 rounded-full font-medium transition-colors">
+                    <a href="#pratiques" class="bg-white hover:bg-amber-50 text-amber-800 border-2 border-amber-600 px-6 py-3 rounded-full font-medium transition-colors">
                         Pratiques
                     </a>
                 </div>

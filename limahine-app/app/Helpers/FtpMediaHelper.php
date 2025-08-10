@@ -30,7 +30,7 @@ class FtpMediaHelper
     public static function getMediaUrl(Media $media, string $conversion = ''): string
     {
         $baseUrl = config('filesystems.disks.ftp.url');
-        
+
         if ($conversion && $media->hasGeneratedConversion($conversion)) {
             $path = $media->getPath($conversion);
         } else {
@@ -65,7 +65,7 @@ class FtpMediaHelper
     public static function getUrlWithFallback($model, string $collection = 'default', string $conversion = '', string $fallback = ''): string
     {
         $url = self::getPublicUrl($model, $collection, $conversion);
-        
+
         if (empty($url) && !empty($fallback)) {
             return $fallback;
         }
@@ -80,10 +80,10 @@ class FtpMediaHelper
     {
         try {
             $url = self::getMediaUrl($media);
-            
+
             // Faire une requête HEAD pour vérifier l'existence
             $headers = @get_headers($url, 1);
-            
+
             return $headers && strpos($headers[0], '200') !== false;
         } catch (\Exception $e) {
             return false;

@@ -7,6 +7,7 @@ use App\Http\Controllers\VideoTrailerController;
 use App\Http\Controllers\FilsCheikhController;
 use App\Http\Controllers\SecureMediaController;
 use App\Http\Controllers\FtpMediaController;
+use App\Http\Controllers\FtpMediaProxyController;
 
 // Routes pour la gestion des langues
 Route::post('/language/switch', [LanguageController::class, 'switch'])->name('language.switch');
@@ -43,7 +44,7 @@ Route::get('/publications/{publication:id}/documents/{document}/serve', [HomeCon
 Route::get('/test-ftp', function() {
     try {
         $config = config('filesystems.disks.ftp');
-        
+
         $results = [
             'config_loaded' => true,
             'config' => [
@@ -53,15 +54,15 @@ Route::get('/test-ftp', function() {
                 'root' => $config['root'],
             ]
         ];
-        
+
         // Test de connexion avec Storage
         $ftpDisk = Storage::disk('ftp');
         $testContent = "Test Laravel FTP - " . now();
         $testFile = 'test_laravel.txt';
-        
+
         $writeResult = $ftpDisk->put($testFile, $testContent);
         $results['write_test'] = $writeResult;
-        
+
         if ($writeResult) {
             $results['file_exists'] = $ftpDisk->exists($testFile);
             if ($ftpDisk->exists($testFile)) {
@@ -70,9 +71,9 @@ Route::get('/test-ftp', function() {
                 $results['cleanup'] = true;
             }
         }
-        
+
         return response()->json($results);
-        
+
     } catch (\Exception $e) {
         return response()->json([
             'error' => $e->getMessage(),
@@ -87,18 +88,18 @@ Route::get('/test-publication-methods', function() {
     if (!$publication) {
         return response()->json(['error' => 'Aucune publication trouvée']);
     }
-    
+
     $methods = [];
     $methods['hasDocuments_exists'] = method_exists($publication, 'hasDocuments');
     $methods['getDocuments_exists'] = method_exists($publication, 'getDocuments');
     $methods['getDocumentsCount_exists'] = method_exists($publication, 'getDocumentsCount');
     $methods['getFormattedDocuments_exists'] = method_exists($publication, 'getFormattedDocuments');
-    
+
     if ($methods['hasDocuments_exists']) {
         $methods['hasDocuments_result'] = $publication->hasDocuments();
         $methods['getDocumentsCount_result'] = $publication->getDocumentsCount();
     }
-    
+
     return response()->json([
         'publication_id' => $publication->id,
         'publication_title' => $publication->getLocalizedTitle(),
@@ -129,10 +130,10 @@ Route::get('/test-documents/{publicationId}', function($publicationId) {
     ]);
 });
 
-// Routes pour la section Découverte - Fils de Cheikh Ahmadou Bamba
-Route::get('/decouverte', [FilsCheikhController::class, 'index'])->name('decouverte.index');
-Route::get('/decouverte/{filsCheikh:slug}', [FilsCheikhController::class, 'show'])->name('decouverte.show');
-Route::get('/decouverte/{filsCheikh:slug}/publications', [FilsCheikhController::class, 'publications'])->name('decouverte.publications');
+// Routes pour la section Découverte - Fils de Cheikh Ahmadou Bamba (DÉSACTIVÉES)
+// Route::get('/decouverte', [FilsCheikhController::class, 'index'])->name('decouverte.index');
+// Route::get('/decouverte/{filsCheikh:slug}', [FilsCheikhController::class, 'show'])->name('decouverte.show');
+// Route::get('/decouverte/{filsCheikh:slug}/publications', [FilsCheikhController::class, 'publications'])->name('decouverte.publications');
 
 // Routes pour les Vidéo
 Route::get('/trailers', [VideoTrailerController::class, 'index'])->name('trailers.index');
@@ -146,3 +147,61 @@ Route::get('/secure-media/{uuid}/{filename?}', [SecureMediaController::class, 's
 Route::get('/secure-media/{uuid}/conversions/{conversion}/{filename?}', [SecureMediaController::class, 'serveConversion'])
     ->name('secure-media.conversion')
     ->where('uuid', '[0-9a-f-]+');
+
+// Route de test pour diagnostiquer le problème de la page découverte
+Route::get('/test-decouverte-debug', function () {
+    $output = [];
+
+    try {
+        $output[] = "=== TEST DE DIAGNOSTIC DECOUVERTE ===";
+
+        // 1. Test du modèle FilsCheikh
+        $output[] = "1. Test du modèle FilsCheikh...";
+        $filsCheikhCount = \App\Models\FilsCheikh::count();
+        $output[] = "✓ Nombre de FilsCheikh: " . $filsCheikhCount;
+
+        // 2. Test des scopes
+        $output[] = "2. Test des scopes...";
+        $publishedCount = \App\Models\FilsCheikh::published()->count();
+        $output[] = "✓ FilsCheikh publiés: " . $publishedCount;
+
+        $khalifCount = \App\Models\FilsCheikh::khalifs()->count();
+        $output[] = "✓ Khalifs: " . $khalifCount;
+
+        $otherCount = \App\Models\FilsCheikh::nonKhalifs()->count();
+        $output[] = "✓ Non-Khalifs: " . $otherCount;
+
+        // 3. Test du modèle Publication
+        $output[] = "3. Test du modèle Publication...";
+        $publicationCount = \App\Models\Publication::count();
+        $output[] = "✓ Nombre de Publications: " . $publicationCount;
+
+        // 4. Test de la vue
+        $output[] = "4. Test de rendu de la vue...";
+        $khalifs = \App\Models\FilsCheikh::published()->khalifs()->get();
+        $autres_fils = \App\Models\FilsCheikh::published()->nonKhalifs()->orderBy('name->fr')->get();
+        $recent_publications = \App\Models\Publication::published()
+            ->byCategory('decouverte')
+            ->with('filsCheikh')
+            ->latest('published_at')
+            ->take(6)
+            ->get();
+
+        $output[] = "✓ Données chargées:";
+        $output[] = "  - Khalifs: " . $khalifs->count();
+        $output[] = "  - Autres fils: " . $autres_fils->count();
+        $output[] = "  - Publications récentes: " . $recent_publications->count();
+
+        // 5. Test de rendu de la vue
+        $output[] = "5. Test de rendu de la vue decouverte.index...";
+        $view = view('decouverte.index', compact('khalifs', 'autres_fils', 'recent_publications'));
+        $content = $view->render();
+        $output[] = "✓ Vue rendue avec succès (" . strlen($content) . " caractères)";
+
+    } catch (\Exception $e) {
+        $output[] = "✗ ERREUR: " . $e->getMessage();
+        $output[] = "Trace: " . $e->getTraceAsString();
+    }
+
+    return response('<pre>' . implode("\n", $output) . '</pre>');
+});

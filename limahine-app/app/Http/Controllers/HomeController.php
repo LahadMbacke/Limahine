@@ -154,7 +154,7 @@ class HomeController extends Controller
     {
         // Récupérer la publication par ID
         $publication = Publication::findOrFail($publicationId);
-        
+
         // Vérifier que la publication est publiée
         if (!$publication->is_published) {
             abort(404);
@@ -162,14 +162,14 @@ class HomeController extends Controller
 
         // Récupérer le document spécifique
         $document = $publication->getMedia('documents')->find($documentId);
-        
+
         if (!$document) {
             abort(404, 'Document non trouvé');
         }
 
         // Obtenir le chemin du fichier
         $filePath = $document->getPath();
-        
+
         if (!file_exists($filePath)) {
             abort(404, 'Fichier non trouvé');
         }
@@ -204,10 +204,10 @@ class HomeController extends Controller
                 'publication' => $publication->id,
                 'document' => $documentId
             ]);
-            
+
             // Rediriger vers Office Online Viewer
             $viewerUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' . urlencode(url($documentUrl));
-            
+
             return view('publications.document-viewer', [
                 'publication' => $publication,
                 'document' => $document,
@@ -219,7 +219,7 @@ class HomeController extends Controller
         // Pour les fichiers texte, afficher directement le contenu
         if (in_array($mimeType, ['text/plain', 'application/rtf'])) {
             $content = file_get_contents($filePath);
-            
+
             return view('publications.document-viewer', [
                 'publication' => $publication,
                 'document' => $document,
@@ -252,7 +252,7 @@ class HomeController extends Controller
     {
         // Récupérer la publication par ID
         $publication = Publication::findOrFail($publicationId);
-        
+
         // Vérifier que la publication est publiée
         if (!$publication->is_published) {
             abort(404);
@@ -260,14 +260,14 @@ class HomeController extends Controller
 
         // Récupérer le document spécifique
         $document = $publication->getMedia('documents')->find($documentId);
-        
+
         if (!$document) {
             abort(404, 'Document non trouvé');
         }
 
         // Obtenir le chemin du fichier
         $filePath = $document->getPath();
-        
+
         if (!file_exists($filePath)) {
             abort(404, 'Fichier non trouvé');
         }
@@ -275,7 +275,7 @@ class HomeController extends Controller
         // Si c'est une demande de contenu texte
         if ($request->has('text') && in_array($document->mime_type, ['text/plain', 'application/rtf'])) {
             $content = file_get_contents($filePath);
-            
+
             // Nettoyer le contenu RTF basique (enlever les balises RTF principales)
             if ($document->mime_type === 'application/rtf') {
                 $content = strip_tags($content);
@@ -283,7 +283,7 @@ class HomeController extends Controller
                 $content = str_replace(['{', '}'], '', $content);
                 $content = trim($content);
             }
-            
+
             return response($content, 200, [
                 'Content-Type' => 'text/plain; charset=utf-8',
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',

@@ -6,17 +6,27 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\UrlGenerator\BaseUrlGenerator;
 
 class FtpUrlGenerator extends BaseUrlGenerator
-{
-    /**
+{    /**
      * Obtenir l'URL du fichier média pour FTP
      */
     public function getUrl(): string
     {
         $baseUrl = config('filesystems.disks.ftp.url');
         $path = $this->getPathRelativeToRoot();
-        
-        // Construire l'URL complète
-        return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+
+        // Vérifier que l'URL de base est définie
+        if (empty($baseUrl)) {
+            throw new \Exception('FTP_URL n\'est pas configuré dans le fichier .env');
+        }
+
+        // Nettoyer l'URL - le serveur FTP utilise public_html comme racine
+        $baseUrl = rtrim($baseUrl, '/');
+        $path = ltrim($path, '/');
+
+        // Construire l'URL complète directement vers le serveur FTP
+        $fullUrl = $baseUrl . '/' . $path;
+
+        return $fullUrl;
     }
 
     /**
@@ -43,7 +53,7 @@ class FtpUrlGenerator extends BaseUrlGenerator
     {
         $baseUrl = config('filesystems.disks.ftp.url');
         $conversionPath = $this->conversion->getConversionFile($this->media);
-        
+
         return rtrim($baseUrl, '/') . '/' . ltrim($conversionPath, '/');
     }
 
@@ -54,7 +64,7 @@ class FtpUrlGenerator extends BaseUrlGenerator
     {
         $baseUrl = config('filesystems.disks.ftp.url');
         $directory = $this->media->getResponsiveImagesDirectory();
-        
+
         return rtrim($baseUrl, '/') . '/' . ltrim($directory, '/');
     }    /**
      * Obtenir le chemin relatif à la racine

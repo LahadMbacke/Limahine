@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\SecurityHeadersDev::class, // Version dev plus permissive
+            \App\Http\Middleware\CorsMiddleware::class, // Ajouter CORS pour résoudre les problèmes cross-origin
+            \App\Http\Middleware\LivewireUploadMiddleware::class, // Middleware pour uploads Livewire
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
