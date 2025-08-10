@@ -4,10 +4,18 @@ namespace App\Listeners;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Services\FtpMediaService;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
 
 class TransferMediaToFtp
 {
+    protected FtpMediaService $ftpMediaService;
+
+    public function __construct(FtpMediaService $ftpMediaService)
+    {
+        $this->ftpMediaService = $ftpMediaService;
+    }
+
     /**
      * Handle the event.
      */
@@ -17,42 +25,14 @@ class TransferMediaToFtp
 
         // Vérifier si le média n'est pas déjà sur FTP
         if ($media->disk === 'ftp') {
+            // S'assurer que le chemin complet est enregistré
+            $this->ftpMediaService->saveMediaWithFullFtpPath($media);
             return;
         }
 
         try {
-            // Lire le contenu du fichier depuis le disque actuel
-            $fileContent = Storage::disk($media->disk)->get($media->getPath());
-
-            // Générer le chemin FTP
-            $ftpPath = $this->generateFtpPath($media);
-
-            // Uploader vers FTP
-            if (Storage::disk('ftp')->put($ftpPath, $fileContent)) {
-                // Mettre à jour le média pour pointer vers FTP
-                $media->update([
-                    'disk' => 'ftp',
-                    'conversions_disk' => 'ftp',
-                    'file_name' => basename($ftpPath)
-                ]);
-
-                Log::info('Média automatiquement transféré vers FTP', [
-                    'media_id' => $media->id,
-                    'original_path' => $media->getPath(),
-                    'ftp_path' => $ftpPath
-                ]);
-
-                // Optionnel : supprimer l'ancien fichier
-                try {
-                    Storage::disk($media->disk === 'ftp' ? 'public' : $media->disk)->delete($media->getPath());
-                } catch (\Exception $e) {
-                    Log::warning('Impossible de supprimer l\'ancien fichier', [
-                        'media_id' => $media->id,
-                        'path' => $media->getPath(),
-                        'error' => $e->getMessage()
-                    ]);
-                }
-            }
+            // Migrer vers FTP avec chemin complet
+            $this->ftpMediaService->migrateToFtpWithFullPath($media);
 
         } catch (\Exception $e) {
             Log::error('Erreur lors du transfert automatique vers FTP', [
@@ -60,24 +40,5 @@ class TransferMediaToFtp
                 'error' => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Générer un chemin FTP pour le média
-     */
-    private function generateFtpPath($media): string
-    {
-        $collection = $media->collection_name;
-        $filename = $media->file_name;
-
-        // Nettoyer le nom de fichier pour FTP
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        $basename = pathinfo($filename, PATHINFO_FILENAME);
-        $basename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $basename);
-        $basename = substr($basename, 0, 50);
-
-        $ftpFilename = $basename . '_' . time() . '_' . substr(md5(uniqid()), 0, 8) . '.' . $extension;
-
-        return $collection . '/' . $ftpFilename;
     }
 }

@@ -7,26 +7,15 @@ use Spatie\MediaLibrary\Support\UrlGenerator\BaseUrlGenerator;
 
 class FtpUrlGenerator extends BaseUrlGenerator
 {    /**
-     * Obtenir l'URL du fichier média pour FTP
+     * Obtenir l'URL du fichier média pour FTP - DIRECT
      */
     public function getUrl(): string
     {
+        // Utiliser directement l'URL FTP sans proxy
         $baseUrl = config('filesystems.disks.ftp.url');
-        $path = $this->getPathRelativeToRoot();
+        $path = $this->media->getPath();
 
-        // Vérifier que l'URL de base est définie
-        if (empty($baseUrl)) {
-            throw new \Exception('FTP_URL n\'est pas configuré dans le fichier .env');
-        }
-
-        // Nettoyer l'URL - le serveur FTP utilise public_html comme racine
-        $baseUrl = rtrim($baseUrl, '/');
-        $path = ltrim($path, '/');
-
-        // Construire l'URL complète directement vers le serveur FTP
-        $fullUrl = $baseUrl . '/' . $path;
-
-        return $fullUrl;
+        return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
     }
 
     /**
@@ -42,7 +31,7 @@ class FtpUrlGenerator extends BaseUrlGenerator
      */
     public function getTemporaryUrl(\DateTimeInterface $expiration, array $options = []): string
     {
-        // Pour FTP, nous retournons l'URL normale car nous ne pouvons pas créer d'URLs temporaires
+        // Pour FTP, retourner directement l'URL publique
         return $this->getUrl();
     }
 
@@ -51,10 +40,11 @@ class FtpUrlGenerator extends BaseUrlGenerator
      */
     public function getConversionUrl(): string
     {
+        // Pour les conversions, utiliser directement l'URL FTP
         $baseUrl = config('filesystems.disks.ftp.url');
-        $conversionPath = $this->conversion->getConversionFile($this->media);
+        $path = $this->media->getPath($this->conversion);
 
-        return rtrim($baseUrl, '/') . '/' . ltrim($conversionPath, '/');
+        return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
     }
 
     /**

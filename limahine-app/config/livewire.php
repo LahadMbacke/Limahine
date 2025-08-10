@@ -65,7 +65,7 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => 'public',        // Utiliser le disque public local pour éviter les problèmes FTP
+        'disk' => 'public',
         'rules' => null,
         'directory' => 'livewire-tmp',
         'middleware' => null,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Publication;
 use App\Models\Temoignage;
 use App\Models\VideoTrailer;
@@ -167,11 +168,19 @@ class HomeController extends Controller
             abort(404, 'Document non trouvé');
         }
 
-        // Obtenir le chemin du fichier
-        $filePath = $document->getPath();
-
-        if (!file_exists($filePath)) {
-            abort(404, 'Fichier non trouvé');
+        // Obtenir le chemin du fichier selon le disque
+        if ($document->disk === 'ftp') {
+            // Vérifier l'existence sur FTP
+            if (!Storage::disk('ftp')->exists($document->getPath())) {
+                abort(404, 'Fichier non trouvé sur le serveur FTP');
+            }
+            $filePath = $document->getPath(); // Chemin FTP
+        } else {
+            // Fichier local
+            $filePath = $document->getPath();
+            if (!file_exists($filePath)) {
+                abort(404, 'Fichier non trouvé');
+            }
         }
 
         // Détecter le type MIME
@@ -180,14 +189,26 @@ class HomeController extends Controller
 
         // Pour les PDF, forcer l'affichage inline dans le navigateur
         if ($mimeType === 'application/pdf') {
-            return response()->file($filePath, [
-                'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . $filename . '"',
-                'X-Frame-Options' => 'SAMEORIGIN',
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0'
-            ]);
+            if ($document->disk === 'ftp') {
+                $fileContent = Storage::disk('ftp')->get($filePath);
+                return response($fileContent, 200, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                    'X-Frame-Options' => 'SAMEORIGIN',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0'
+                ]);
+            } else {
+                return response()->file($filePath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                    'X-Frame-Options' => 'SAMEORIGIN',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0'
+                ]);
+            }
         }
 
         // Pour les documents Office (Word, Excel, PowerPoint), utiliser Office Online Viewer
@@ -218,7 +239,11 @@ class HomeController extends Controller
 
         // Pour les fichiers texte, afficher directement le contenu
         if (in_array($mimeType, ['text/plain', 'application/rtf'])) {
-            $content = file_get_contents($filePath);
+            if ($document->disk === 'ftp') {
+                $content = Storage::disk('ftp')->get($filePath);
+            } else {
+                $content = file_get_contents($filePath);
+            }
 
             return view('publications.document-viewer', [
                 'publication' => $publication,
@@ -238,14 +263,26 @@ class HomeController extends Controller
         }
 
         // Par défaut, essayer d'afficher le fichier dans le navigateur
-        return response()->file($filePath, [
-            'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-            'X-Frame-Options' => 'SAMEORIGIN',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0'
-        ]);
+        if ($document->disk === 'ftp') {
+            $fileContent = Storage::disk('ftp')->get($filePath);
+            return response($fileContent, 200, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ]);
+        } else {
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ]);
+        }
     }
 
     public function serveDocument($publicationId, $documentId, Request $request)
@@ -265,7 +302,12 @@ class HomeController extends Controller
             abort(404, 'Document non trouvé');
         }
 
-        // Obtenir le chemin du fichier
+        // Vérifier si le fichier est sur FTP
+        if ($document->disk === 'ftp') {
+            return $this->serveFtpDocument($document, $request);
+        }
+
+        // Pour les fichiers locaux
         $filePath = $document->getPath();
 
         if (!file_exists($filePath)) {
@@ -300,5 +342,59 @@ class HomeController extends Controller
             'Cache-Control' => 'public, max-age=3600',
             'Access-Control-Allow-Origin' => '*'
         ]);
+    }
+
+    /**
+     * Servir un document depuis FTP
+     */
+    private function serveFtpDocument($document, Request $request)
+    {
+        try {
+            // Vérifier que le fichier existe sur FTP
+            if (!Storage::disk('ftp')->exists($document->getPath())) {
+                abort(404, 'Fichier non trouvé sur le serveur FTP');
+            }
+
+            // Si c'est une demande de contenu texte
+            if ($request->has('text') && in_array($document->mime_type, ['text/plain', 'application/rtf'])) {
+                $content = Storage::disk('ftp')->get($document->getPath());
+
+                // Nettoyer le contenu RTF basique
+                if ($document->mime_type === 'application/rtf') {
+                    $content = strip_tags($content);
+                    $content = preg_replace('/\\\\[a-z]+[0-9]*\s?/', '', $content);
+                    $content = str_replace(['{', '}'], '', $content);
+                    $content = trim($content);
+                }
+
+                return response($content, 200, [
+                    'Content-Type' => 'text/plain; charset=utf-8',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0'
+                ]);
+            }
+
+            // Pour les autres fichiers, récupérer le contenu depuis FTP
+            $fileContent = Storage::disk('ftp')->get($document->getPath());
+
+            return response($fileContent, 200, [
+                'Content-Type' => $document->mime_type,
+                'Content-Disposition' => 'inline; filename="' . $document->file_name . '"',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Cache-Control' => 'public, max-age=3600',
+                'Access-Control-Allow-Origin' => '*',
+                'Content-Length' => strlen($fileContent)
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors du service du document FTP', [
+                'document_id' => $document->id,
+                'path' => $document->getPath(),
+                'error' => $e->getMessage()
+            ]);
+
+            abort(404, 'Impossible de récupérer le fichier');
+        }
     }
 }

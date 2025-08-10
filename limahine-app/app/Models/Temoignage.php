@@ -75,20 +75,44 @@ class Temoignage extends Model implements HasMedia
               ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
     }
 
-    // Méthodes pour obtenir les URLs des médias (FTP)
+    // Méthodes pour obtenir les URLs des médias (FTP Direct)
     public function getAuthorPhotoUrl(string $conversion = ''): string
     {
-        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'author_photo', $conversion);
+        $media = $this->getFirstMedia('author_photo');
+        return $media ? $media->getUrl($conversion) : '';
+    }
+
+    /**
+     * Utiliser directement Media Library pour tous les médias
+     */
+    public function getFirstMediaUrl(string $collectionName = 'default', string $conversion = ''): string
+    {
+        $media = $this->getFirstMedia($collectionName);
+        return $media ? $media->getUrl($conversion) : '';
     }
 
     public function getGalleryUrls(string $conversion = ''): array
     {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
+        $mediaItems = $this->getMedia('gallery');
+        $urls = [];
+
+        foreach ($mediaItems as $media) {
+            $urls[] = $media->getUrl($conversion);
+        }
+
+        return $urls;
     }
 
     public function getAudioUrls(): array
     {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'audio');
+        $mediaItems = $this->getMedia('audio');
+        $urls = [];
+
+        foreach ($mediaItems as $media) {
+            $urls[] = $media->getUrl();
+        }
+
+        return $urls;
     }
 
     // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)

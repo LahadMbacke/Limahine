@@ -13,7 +13,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class PublicationResource extends Resource
 {
@@ -69,7 +68,7 @@ class PublicationResource extends Resource
                             ->label('Auteur')
                             ->options(User::pluck('name', 'id'))
                             ->required()
-                            ->default(auth()->id()),
+                            ->default(1),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Contenu')
@@ -105,12 +104,18 @@ class PublicationResource extends Resource
                         Forms\Components\FileUpload::make('featured_image')
                             ->label('Image mise en avant')
                             ->image()
-                            ->imageEditor(),
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('publications/featured')
+                            ->visibility('public')
+                            ->maxSize(5120),
 
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
+                        Forms\Components\FileUpload::make('documents')
                             ->label('Fichiers attachés')
-                            ->collection('documents')
                             ->multiple()
+                            ->disk('public')
+                            ->directory('publications/documents')
+                            ->visibility('public')
                             ->acceptedFileTypes([
                                 'application/pdf',
                                 'application/msword',
@@ -124,8 +129,14 @@ class PublicationResource extends Resource
                                 'application/zip',
                                 'application/x-rar-compressed'
                             ])
+                            ->maxSize(10240)
                             ->maxFiles(10)
-                            ->helperText('Formats acceptés : PDF, Word, Excel, PowerPoint, TXT, RTF, ZIP, RAR (Max: 10 fichiers)')
+                            ->helperText('Les noms de fichiers seront automatiquement nettoyés pour l\'affichage. Formats acceptés : PDF, Word, Excel, PowerPoint, TXT, RTF, ZIP, RAR (Max: 10 fichiers, 10MB chacun)'),
+
+                        Forms\Components\Textarea::make('document_names')
+                            ->label('Noms personnalisés des documents (optionnel)')
+                            ->helperText('Un nom par ligne, dans l\'ordre des fichiers uploadés. Laissez vide pour utiliser les noms automatiques.')
+                            ->rows(3)
                             ->columnSpanFull(),
 
                         Forms\Components\TagsInput::make('tags')
@@ -146,7 +157,7 @@ class PublicationResource extends Resource
                         Forms\Components\Textarea::make('meta_description.ar')
                             ->label('Description SEO (Arabe)')
                             ->rows(2),
-                    ])->columns(2),
+                    ]),
 
                 Forms\Components\Section::make('Publication')
                     ->schema([
@@ -242,6 +253,7 @@ class PublicationResource extends Resource
         return [
             'index' => Pages\ListPublications::route('/'),
             'create' => Pages\CreatePublication::route('/create'),
+            'view' => Pages\ViewPublication::route('/{record}'),
             'edit' => Pages\EditPublication::route('/{record}/edit'),
         ];
     }

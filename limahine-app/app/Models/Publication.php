@@ -5,15 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Publication extends Model implements HasMedia
+class Publication extends Model
 {
-    use HasFactory, HasTranslations, InteractsWithMedia;
+    use HasFactory, HasTranslations;
 
     protected $fillable = [
         'title',
@@ -24,6 +20,8 @@ class Publication extends Model implements HasMedia
         'is_published',
         'published_at',
         'featured_image',
+        'documents',
+        'document_names',
         'meta_description',
         'author_id',
         'reading_time',
@@ -43,7 +41,8 @@ class Publication extends Model implements HasMedia
         'is_published' => 'boolean',
         'published_at' => 'datetime',
         'tags' => 'array',
-        'featured' => 'boolean'
+        'featured' => 'boolean',
+        'documents' => 'array'
     ];
 
     // Relations
@@ -111,163 +110,91 @@ class Publication extends Model implements HasMedia
             ?: $this->getTranslation('excerpt', 'en');
     }
 
-    // Collections de médias
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('featured_image')
-              ->singleFile()
-              ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
-
-        $this->addMediaCollection('gallery')
-              ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
-
-        $this->addMediaCollection('documents')
-              ->acceptsMimeTypes([
-                  'application/pdf',
-                  'application/msword',
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                  'application/vnd.ms-excel',
-                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                  'application/vnd.ms-powerpoint',
-                  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                  'text/plain',
-                  'application/rtf',
-                  'application/zip',
-                  'application/x-rar-compressed'
-              ]);
-
-        $this->addMediaCollection('audio')
-              ->acceptsMimeTypes(['audio/mpeg', 'audio/wav', 'audio/ogg']);
-    }
-
-    // Conversions des médias avec protection
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-              ->width(300)
-              ->height(300)
-              ->quality(70)
-              ->nonQueued()
-              ->performOnCollections('featured_image', 'gallery');
-
-        $this->addMediaConversion('preview')
-              ->width(800)
-              ->height(600)
-              ->quality(60)
-              ->nonQueued()
-              ->performOnCollections('featured_image', 'gallery');
-
-        // Conversion avec filigrane pour les images sensibles
-        $this->addMediaConversion('watermarked')
-              ->width(1200)
-              ->height(900)
-              ->quality(50)
-              ->nonQueued()
-              ->performOnCollections('featured_image', 'gallery');
-    }
-
-    // Méthodes pour obtenir les URLs des médias (FTP)
-    public function getFeaturedImageUrl(string $conversion = ''): string
-    {
-        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'featured_image', $conversion);
-    }
-
-    public function getGalleryUrls(string $conversion = ''): array
-    {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
-    }
-
-    public function getDocumentUrls(): array
-    {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'documents');
-    }
-
-    public function getAudioUrls(): array
-    {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'audio');
-    }
-
-    // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)
-    public function getSecureFeaturedImageUrl(string $conversion = ''): string
-    {
-        return $this->getFeaturedImageUrl($conversion);
-    }
-
-    public function getSecureGalleryUrls(string $conversion = ''): array
-    {
-        return $this->getGalleryUrls($conversion);
-    }
-
-    public function getSecureDocumentUrls(): array
-    {
-        return $this->getDocumentUrls();
-    }
-
-    public function getSecureAudioUrls(): array
-    {
-        return $this->getAudioUrls();
-    }
-
-    public function hasSecureFeaturedImage(): bool
-    {
-        return $this->hasFeaturedImage();
-    }
-
-    public function hasSecureGallery(): bool
-    {
-        return $this->hasGallery();
-    }
-
-    // Helper methods pour les médias
+    // Helper methods pour les médias simplifiés
     public function hasFeaturedImage(): bool
     {
-        return $this->hasMedia('featured_image');
+        return !empty($this->featured_image);
     }
 
-    public function hasGallery(): bool
+    public function getFeaturedImageUrl(): string
     {
-        return $this->hasMedia('gallery');
+        if (empty($this->featured_image)) {
+            return '';
+        }
+
+        return asset('storage/' . $this->featured_image);
     }
 
-    // Helper methods pour les documents
+    // Helper methods pour les documents simplifiés
     public function hasDocuments(): bool
     {
-        return $this->getMedia('documents')->count() > 0;
-    }
-
-    public function getDocuments()
-    {
-        return $this->getMedia('documents');
+        return !empty($this->documents) && count($this->documents) > 0;
     }
 
     public function getDocumentsCount(): int
     {
-        return $this->getMedia('documents')->count();
+        return $this->documents ? count($this->documents) : 0;
     }
 
-    public function getFormattedDocuments(): array
+    public function getFormattedDocuments(bool $includeDownloadUrl = true): array
     {
-        $documents = $this->getMedia('documents');
-        $formattedDocuments = [];
+        if (empty($this->documents)) {
+            return [];
+        }
 
-        foreach ($documents as $document) {
-            $extension = strtolower(pathinfo($document->file_name, PATHINFO_EXTENSION));
+        $formattedDocuments = [];
+        $customNames = $this->getCustomDocumentNames();
+
+        foreach ($this->documents as $index => $document) {
+            if (empty($document)) continue;
+
+            $extension = strtolower(pathinfo($document, PATHINFO_EXTENSION));
+            $originalFilename = basename($document);
             
-            $formattedDocuments[] = [
-                'id' => $document->id,
-                'name' => $document->name,
-                'file_name' => $document->file_name,
-                'mime_type' => $document->mime_type,
-                'size' => $document->size,
-                'human_readable_size' => $document->human_readable_size,
+            // Utiliser le nom personnalisé s'il existe, sinon nettoyer le nom original
+            $displayName = isset($customNames[$index]) && !empty($customNames[$index])
+                ? trim($customNames[$index])
+                : $this->getCleanFileName($originalFilename);
+
+            $documentData = [
+                'name' => $displayName,
+                'file_name' => $displayName,
+                'original_name' => $originalFilename,
+                'has_custom_name' => isset($customNames[$index]) && !empty($customNames[$index]),
                 'extension' => $extension,
                 'type_icon' => $this->getDocumentTypeIcon($extension),
                 'type_color' => $this->getDocumentTypeColor($extension),
-                'url' => route('publications.documents.serve', ['publication' => $this->id, 'document' => $document->id])
+                'size' => $this->getFileSize($document),
+                'human_readable_size' => $this->getHumanReadableSize($document)
             ];
+
+            // N'inclure l'URL que si explicitement demandé (pour compatibilité avec les vues existantes)
+            if ($includeDownloadUrl) {
+                $documentData['url'] = asset('storage/' . $document);
+            }
+
+            $formattedDocuments[] = $documentData;
         }
 
         return $formattedDocuments;
+    }
+
+    private function getFileSize(string $filePath): int
+    {
+        $fullPath = storage_path('app/public/' . $filePath);
+        return file_exists($fullPath) ? filesize($fullPath) : 0;
+    }
+
+    private function getHumanReadableSize(string $filePath): string
+    {
+        $size = $this->getFileSize($filePath);
+        $units = ['B', 'KB', 'MB', 'GB'];
+        
+        for ($i = 0; $size > 1024 && $i < count($units) - 1; $i++) {
+            $size /= 1024;
+        }
+        
+        return round($size, 2) . ' ' . $units[$i];
     }
 
     public function getDocumentTypeIcon(string $extension): string
@@ -316,5 +243,91 @@ class Publication extends Model implements HasMedia
         ];
 
         return $colorMap[$extension] ?? 'gray';
+    }
+
+    /**
+     * Obtenir l'URL sécurisée pour visualiser un document (sans téléchargement)
+     */
+    public function getSecureDocumentViewUrl(string $documentPath): string
+    {
+        // Pour l'instant, on utilise la même URL mais cela pourrait être 
+        // modifié pour passer par un contrôleur qui ajoute des en-têtes
+        // de sécurité ou utilise un middleware de protection
+        return asset('storage/' . $documentPath);
+    }
+
+    /**
+     * Nettoyer et formater le nom de fichier pour l'affichage
+     */
+    private function getCleanFileName(string $filename): string
+    {
+        // Retirer l'extension du nom
+        $nameWithoutExt = pathinfo($filename, PATHINFO_FILENAME);
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        
+        // Si le nom contient trop de caractères bizarres ou est trop long, utiliser un nom générique
+        if (strlen($nameWithoutExt) > 50 || preg_match('/[^\w\s\-_\.]/', $nameWithoutExt)) {
+            return $this->getGenericDocumentName($extension);
+        }
+        
+        // Nettoyer le nom : remplacer les underscores par des espaces, capitaliser
+        $cleanName = str_replace(['_', '-'], ' ', $nameWithoutExt);
+        $cleanName = ucwords(strtolower($cleanName));
+        
+        // Limiter la longueur
+        if (strlen($cleanName) > 30) {
+            $cleanName = substr($cleanName, 0, 27) . '...';
+        }
+        
+        return $cleanName;
+    }
+
+    /**
+     * Obtenir un nom générique basé sur le type de document
+     */
+    private function getGenericDocumentName(string $extension): string
+    {
+        $genericNames = [
+            'pdf' => 'Document PDF',
+            'doc' => 'Document Word',
+            'docx' => 'Document Word',
+            'xls' => 'Feuille Excel',
+            'xlsx' => 'Feuille Excel',
+            'ppt' => 'Présentation PowerPoint',
+            'pptx' => 'Présentation PowerPoint',
+            'txt' => 'Fichier Texte',
+            'rtf' => 'Document RTF',
+            'zip' => 'Archive ZIP',
+            'rar' => 'Archive RAR',
+            'jpg' => 'Image JPEG',
+            'jpeg' => 'Image JPEG',
+            'png' => 'Image PNG',
+            'gif' => 'Image GIF',
+            'webp' => 'Image WebP',
+        ];
+
+        return $genericNames[$extension] ?? 'Document';
+    }
+
+    /**
+     * Obtenir les noms personnalisés des documents
+     */
+    private function getCustomDocumentNames(): array
+    {
+        if (empty($this->document_names)) {
+            return [];
+        }
+
+        $names = explode("\n", $this->document_names);
+        $cleanNames = [];
+        
+        foreach ($names as $index => $name) {
+            $cleanName = trim($name);
+            if (!empty($cleanName)) {
+                $cleanNames[$index] = $cleanName;
+            }
+        }
+        
+        return $cleanNames;
     }
 }

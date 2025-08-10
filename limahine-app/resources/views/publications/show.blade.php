@@ -199,14 +199,14 @@
                             </svg>
                             <div class="text-sm">
                                 <p class="text-blue-800 font-medium mb-1">Consultation en lecture seule</p>
-                                <p class="text-blue-700">Les documents sont présentés ci-dessous en mode lecture seule pour protéger la propriété intellectuelle de l'auteur. Le téléchargement et la copie sont désactivés.</p>
+                                <p class="text-blue-700">Les documents sont présentés ci-dessous en mode lecture seule pour protéger la propriété intellectuelle de l'auteur. Le téléchargement est désactivé conformément aux droits d'auteur.</p>
                             </div>
                         </div>
                     </div>
 
                     {{-- Liste des documents avec visualisation intégrée --}}
                     @foreach($publication->getFormattedDocuments() as $index => $document)
-                        <div class="mb-8 bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm" id="document-{{ $document['id'] }}">
+                        <div class="mb-8 bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm" id="document-{{ $index }}">
                             {{-- En-tête du document --}}
                             <div class="bg-gradient-to-r 
                                 @if($document['type_color'] === 'red') from-red-50 to-red-100 border-red-200
@@ -232,7 +232,15 @@
                                         </div>
                                         <div>
                                             <h4 class="text-lg font-semibold text-accent-900">
-                                                {{ $document['name'] ?: $document['file_name'] }}
+                                                {{ $document['name'] }}
+                                                @if($document['has_custom_name'] ?? false)
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-2">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Nom personnalisé
+                                                </span>
+                                                @endif
                                             </h4>
                                             <div class="flex items-center gap-4 text-sm text-accent-600">
                                                 <span class="flex items-center gap-1">
@@ -249,11 +257,18 @@
                                                     </span>
                                                 </span>
                                                 <span>{{ $document['human_readable_size'] }}</span>
+                                                @if(isset($document['original_name']) && $document['original_name'] !== $document['name'] && !($document['has_custom_name'] ?? false))
+                                                <span class="text-xs text-gray-500" title="Nom original : {{ $document['original_name'] }}">
+                                                    <svg class="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <button onclick="toggleDocument({{ $document['id'] }})" 
+                                        <button onclick="toggleDocument({{ $index }})" 
                                                 class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
                                                 @if($document['type_color'] === 'red') text-red-700 bg-red-100 hover:bg-red-200
                                                 @elseif($document['type_color'] === 'blue') text-blue-700 bg-blue-100 hover:bg-blue-200
@@ -263,43 +278,38 @@
                                                 @else text-gray-700 bg-gray-100 hover:bg-gray-200
                                                 @endif
                                                 ">
-                                            <svg id="toggle-icon-{{ $document['id'] }}" class="w-4 h-4 mr-2 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg id="toggle-icon-{{ $index }}" class="w-4 h-4 mr-2 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                             </svg>
-                                            <span id="toggle-text-{{ $document['id'] }}">Afficher</span>
+                                            <span id="toggle-text-{{ $index }}">Afficher</span>
                                         </button>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Lecture seule
-                                        </span>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Contenu du document (initialement masqué) --}}
-                            <div id="document-content-{{ $document['id'] }}" class="hidden">
-                                <div class="document-viewer" data-document-id="{{ $document['id'] }}" data-document-type="{{ $document['extension'] }}" data-document-url="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}">
+                            <div id="document-content-{{ $index }}" class="hidden">
+                                <div class="document-viewer" data-document-id="{{ $index }}" data-document-type="{{ $document['extension'] }}" data-document-url="{{ $document['url'] }}">
                                     @if(in_array($document['extension'], ['pdf']))
-                                        {{-- Visualiseur PDF intégré --}}
+                                        {{-- Visualiseur PDF intégré avec restrictions --}}
                                         <div class="relative bg-gray-50" style="height: 600px;">
-                                            <iframe src="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}#toolbar=0&navpanes=0&scrollbar=0" 
+                                            <iframe src="{{ route('publications.documents.secure-view', [$publication->id, $index]) }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH&disableprint=1&disabledownload=1" 
                                                     class="w-full h-full border-0 document-iframe" 
-                                                    style="pointer-events: none; user-select: none;"
+                                                    style="pointer-events: auto; user-select: none;"
+                                                    data-document-id="{{ $index }}"
                                                     oncontextmenu="return false;"
-                                                    data-document-id="{{ $document['id'] }}">
+                                                    onselectstart="return false;"
+                                                    ondragstart="return false;">
                                             </iframe>
-                                            {{-- Overlay de protection --}}
-                                            <div class="absolute inset-0 pointer-events-none bg-transparent"></div>
+                                            {{-- Overlay transparent pour bloquer les interactions --}}
+                                            <div class="absolute inset-0 pointer-events-none" style="background: transparent;"></div>
                                         </div>
                                     @elseif(in_array($document['extension'], ['txt', 'rtf']))
                                         {{-- Visualiseur de texte --}}
                                         <div class="p-6 bg-gray-50">
                                             <div class="bg-white border border-gray-200 rounded-lg p-6 max-h-96 overflow-y-auto">
-                                                <div class="prose prose-sm max-w-none" style="user-select: none;">
-                                                    <div id="text-content-{{ $document['id'] }}" class="whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                                                <div class="prose prose-sm max-w-none">
+                                                    <div id="text-content-{{ $index }}" class="whitespace-pre-wrap font-mono text-sm leading-relaxed">
                                                         {{-- Le contenu sera chargé via AJAX --}}
                                                         <div class="flex items-center justify-center py-8">
                                                             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
@@ -310,15 +320,16 @@
                                             </div>
                                         </div>
                                     @elseif(in_array($document['extension'], ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                        {{-- Visualiseur d'images --}}
+                                        {{-- Visualiseur d'images avec protection --}}
                                         <div class="p-6 bg-gray-50">
                                             <div class="text-center">
-                                                <img src="{{ route('publications.documents.serve', ['publication' => $publication->id, 'document' => $document['id']]) }}" 
+                                                <img src="{{ route('publications.documents.secure-view', [$publication->id, $index]) }}" 
                                                      alt="{{ $document['name'] ?: $document['file_name'] }}"
                                                      class="max-w-full h-auto mx-auto rounded-lg shadow-lg"
-                                                     style="user-select: none; pointer-events: none;"
                                                      oncontextmenu="return false;"
-                                                     ondragstart="return false;">
+                                                     onselectstart="return false;"
+                                                     ondragstart="return false;"
+                                                     style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
                                             </div>
                                         </div>
                                     @else
@@ -335,21 +346,18 @@
                                             ">
                                                 <i class="{{ $document['type_icon'] }} text-2xl"></i>
                                             </div>
-                                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Aperçu non disponible</h4>
+                                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Aperçu disponible</h4>
                                             <p class="text-gray-600 mb-4">
-                                                Ce type de fichier ({{ strtoupper($document['extension']) }}) ne peut pas être affiché directement dans le navigateur.
+                                                Ce fichier ({{ strtoupper($document['extension']) }}) est disponible au téléchargement.
                                             </p>
-                                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                                                <div class="flex items-start gap-3">
-                                                    <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                                    <div class="text-sm text-left">
-                                                        <p class="text-blue-800 font-medium mb-1">Information</p>
-                                                        <p class="text-blue-700">Contactez l'auteur pour plus d'informations sur ce document.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <a href="{{ $document['url'] }}" 
+                                               target="_blank"
+                                               class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"></path>
+                                                </svg>
+                                                Télécharger le fichier
+                                            </a>
                                         </div>
                                     @endif
                                 </div>

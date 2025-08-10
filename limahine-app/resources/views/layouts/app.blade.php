@@ -63,8 +63,9 @@
 
     @stack('styles')
 
-    <!-- Protection contre le clic droit et les raccourcis clavier -->
+    <!-- Protection contre le clic droit et les raccourcis clavier - DÉSACTIVÉE EN DÉVELOPPEMENT -->
     <style>
+        @if(config('app.env') === 'production')
         /* Désactiver la sélection de texte */
         * {
             -webkit-user-select: none;
@@ -82,6 +83,15 @@
             -ms-user-select: text !important;
             user-select: text !important;
         }
+        @else
+        /* Mode développement : sélection de texte autorisée partout */
+        * {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        @endif
 
         /* Masquer les éléments en cas d'outils de développement ouverts */
         .dev-tools-warning {
@@ -371,8 +381,9 @@
 
     @stack('scripts')
 
-    <!-- Scripts de protection contre l'inspection et le clic droit -->
+    <!-- Scripts de protection contre l'inspection et le clic droit - DÉSACTIVÉS EN DÉVELOPPEMENT -->
     <script>
+        @if(config('app.env') === 'production')
         (function() {
             'use strict';
 
@@ -493,6 +504,11 @@
             console.log('%cCeci est une fonctionnalité du navigateur destinée aux développeurs. Si quelqu\'un vous a dit de copier-coller quelque chose ici pour activer une fonctionnalité ou "pirater" le compte de quelqu\'un d\'autre, il s\'agit d\'une arnaque et cela lui donnera accès à votre compte.', 'color: red; font-size: 16px;');
 
         })();
+        @else
+        // Mode développement : outils de développement autorisés
+        console.log('%cMode développement activé', 'color: green; font-size: 16px; font-weight: bold;');
+        console.log('%cLes outils de développement sont autorisés pour le diagnostic.', 'color: green; font-size: 14px;');
+        @endif
     </script>
 
     <!-- Scripts globaux -->

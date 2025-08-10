@@ -29,15 +29,21 @@ class FtpMediaHelper
      */
     public static function getMediaUrl(Media $media, string $conversion = ''): string
     {
-        $baseUrl = config('filesystems.disks.ftp.url');
+        // Si le média est sur FTP, utiliser l'URL directe
+        if ($media->disk === 'ftp') {
+            $baseUrl = config('filesystems.disks.ftp.url');
 
-        if ($conversion && $media->hasGeneratedConversion($conversion)) {
-            $path = $media->getPath($conversion);
-        } else {
-            $path = $media->getPath();
+            if ($conversion && $media->hasGeneratedConversion($conversion)) {
+                $path = $media->getPath($conversion);
+            } else {
+                $path = $media->getPath();
+            }
+
+            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
 
-        return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+        // Pour les autres disques, utiliser la méthode normale de Media Library
+        return $media->getUrl($conversion);
     }
 
     /**

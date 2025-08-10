@@ -19,26 +19,23 @@ class FtpMediaProxyController extends Controller
             // Trouver le média
             $media = Media::findOrFail($mediaId);
 
-            // Construire l'URL FTP directe
-            $baseUrl = config('filesystems.disks.ftp.url');
-            $filePath = $media->getPath();
-            $ftpUrl = rtrim($baseUrl, '/') . '/' . ltrim($filePath, '/');
-
-            // Télécharger le fichier depuis le FTP
-            $response = Http::timeout(30)->get($ftpUrl);
-
-            if (!$response->successful()) {
+            // Vérifier que le fichier existe sur FTP
+            if (!Storage::disk('ftp')->exists($media->getPath())) {
                 abort(404, 'Fichier non trouvé sur le serveur FTP');
             }
 
+            // Récupérer le contenu du fichier depuis FTP
+            $fileContent = Storage::disk('ftp')->get($media->getPath());
+
             // Retourner le fichier avec les bons headers
-            return response($response->body(), 200, [
+            return response($fileContent, 200, [
                 'Content-Type' => $media->mime_type,
                 'Content-Disposition' => 'inline; filename="' . $media->file_name . '"',
                 'Cache-Control' => 'public, max-age=604800', // Cache 7 jours
                 'Access-Control-Allow-Origin' => '*',
                 'Access-Control-Allow-Methods' => 'GET',
                 'Access-Control-Allow-Headers' => 'Content-Type',
+                'Content-Length' => strlen($fileContent),
             ]);
 
         } catch (\Exception $e) {
@@ -66,25 +63,25 @@ class FtpMediaProxyController extends Controller
             }
 
             // Construire l'URL FTP pour la conversion
-            $baseUrl = config('filesystems.disks.ftp.url');
             $conversionPath = $media->getPath($conversion);
-            $ftpUrl = rtrim($baseUrl, '/') . '/' . ltrim($conversionPath, '/');
 
-            // Télécharger le fichier depuis le FTP
-            $response = Http::timeout(30)->get($ftpUrl);
-
-            if (!$response->successful()) {
+            // Vérifier que le fichier de conversion existe sur FTP
+            if (!Storage::disk('ftp')->exists($conversionPath)) {
                 abort(404, 'Conversion non trouvée sur le serveur FTP');
             }
 
+            // Récupérer le contenu de la conversion depuis FTP
+            $fileContent = Storage::disk('ftp')->get($conversionPath);
+
             // Retourner la conversion avec les bons headers
-            return response($response->body(), 200, [
+            return response($fileContent, 200, [
                 'Content-Type' => 'image/jpeg', // Les conversions sont généralement en JPEG
                 'Content-Disposition' => 'inline',
                 'Cache-Control' => 'public, max-age=604800', // Cache 7 jours
                 'Access-Control-Allow-Origin' => '*',
                 'Access-Control-Allow-Methods' => 'GET',
                 'Access-Control-Allow-Headers' => 'Content-Type',
+                'Content-Length' => strlen($fileContent),
             ]);
 
         } catch (\Exception $e) {

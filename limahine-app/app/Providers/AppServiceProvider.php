@@ -16,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Enregistrer le service de migration FTP
         $this->app->singleton(\App\Services\FtpMigrationService::class);
+
+        // Enregistrer le service de gestion des médias FTP
+        $this->app->singleton(\App\Services\FtpMediaService::class);
     }
 
     /**
@@ -30,10 +33,19 @@ class AppServiceProvider extends ServiceProvider
             App::setLocale(config('app.locale', 'fr'));
         }
 
-        // Enregistrer l'événement pour le transfert automatique vers FTP
-        \Event::listen(
-            \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded::class,
-            \App\Listeners\TransferMediaToFtp::class
-        );
+        // Enregistrer les commandes FTP si nous sommes en mode console
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \App\Console\Commands\TestFtpMedia::class,
+                \App\Console\Commands\FixFtpMediaPaths::class,
+                \App\Console\Commands\MigrateMediaToFtp::class,
+            ]);
+        }
+
+        // Événement de transfert FTP désactivé pour éviter les conflits
+        // Event::listen(
+        //     \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded::class,
+        //     \App\Listeners\TransferMediaToFtp::class
+        // );
     }
 }

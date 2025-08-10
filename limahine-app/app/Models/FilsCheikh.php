@@ -103,20 +103,38 @@ class FilsCheikh extends Model implements HasMedia
               ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
-    // Méthodes pour obtenir les URLs des médias (FTP)
+    // Méthodes pour obtenir les URLs des médias (FTP Direct)
     public function getCoverImageUrl(string $conversion = ''): string
     {
-        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'cover_image', $conversion);
+        $media = $this->getFirstMedia('cover_image');
+        return $media ? $media->getUrl($conversion) : '';
+    }
+
+    /**
+     * Utiliser directement Media Library pour tous les médias
+     */
+    public function getFirstMediaUrl(string $collectionName = 'default', string $conversion = ''): string
+    {
+        $media = $this->getFirstMedia($collectionName);
+        return $media ? $media->getUrl($conversion) : '';
     }
 
     public function getPortraitUrl(string $conversion = ''): string
     {
-        return \App\Helpers\FtpMediaHelper::getPublicUrl($this, 'portrait', $conversion);
+        $media = $this->getFirstMedia('portrait');
+        return $media ? $media->getUrl($conversion) : '';
     }
 
     public function getGalleryUrls(string $conversion = ''): array
     {
-        return \App\Helpers\FtpMediaHelper::getCollectionUrls($this, 'gallery', $conversion);
+        $mediaItems = $this->getMedia('gallery');
+        $urls = [];
+
+        foreach ($mediaItems as $media) {
+            $urls[] = $media->getUrl($conversion);
+        }
+
+        return $urls;
     }
 
     // Méthodes sécurisées pour obtenir les URLs des médias (legacy - pour compatibilité)

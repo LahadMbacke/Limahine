@@ -8,6 +8,7 @@ use App\Http\Controllers\FilsCheikhController;
 use App\Http\Controllers\SecureMediaController;
 use App\Http\Controllers\FtpMediaController;
 use App\Http\Controllers\FtpMediaProxyController;
+use App\Http\Controllers\SecureDocumentController;
 
 // Routes pour la gestion des langues
 Route::post('/language/switch', [LanguageController::class, 'switch'])->name('language.switch');
@@ -36,9 +37,75 @@ Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheu
 // Routes pour les publications individuelles
 Route::get('/publications/{publication:slug}', [HomeController::class, 'showPublication'])->name('publications.show');
 
-// Routes pour les documents des publications
+// Route sécurisée pour visualiser les documents (lecture seule)
+Route::get('/publications/{publication}/documents/{documentIndex}/secure-view', [SecureDocumentController::class, 'viewDocument'])->name('publications.documents.secure-view');
+
+// Routes pour les documents des publications (anciennes, à supprimer éventuellement)
 Route::get('/publications/{publication:id}/documents/{document}/view', [HomeController::class, 'viewDocument'])->name('publications.documents.view');
 Route::get('/publications/{publication:id}/documents/{document}/serve', [HomeController::class, 'serveDocument'])->name('publications.documents.serve');
+
+// Route de test pour diagnostiquer le problème d'affichage des médias FTP
+Route::get('/test-media-ftp', function() {
+    $results = [];
+
+    try {
+        // 1. Test de la connexion FTP
+        $results['ftp_config'] = [
+            'host' => config('filesystems.disks.ftp.host'),
+            'url' => config('filesystems.disks.ftp.url'),
+            'disk_name' => config('media-library.disk_name'),
+        ];
+
+        // 2. Compter les médias FTP
+        $ftpMediaCount = \Spatie\MediaLibrary\MediaCollections\Models\Media::where('disk', 'ftp')->count();
+        $results['ftp_media_count'] = $ftpMediaCount;
+
+        // 3. Tester quelques médias FTP
+        $testMedias = \Spatie\MediaLibrary\MediaCollections\Models\Media::where('disk', 'ftp')
+            ->take(3)
+            ->get()
+            ->map(function($media) {
+                try {
+                    return [
+                        'id' => $media->id,
+                        'file_name' => $media->file_name,
+                        'collection' => $media->collection_name,
+                        'path' => $media->getPath(),
+                        'url' => $media->getUrl(),
+                        'exists_on_ftp' => \Storage::disk('ftp')->exists($media->getPath()),
+                        'custom_properties' => $media->custom_properties,
+                    ];
+                } catch (\Exception $e) {
+                    return [
+                        'id' => $media->id,
+                        'error' => $e->getMessage()
+                    ];
+                }
+            });
+
+        $results['test_medias'] = $testMedias;
+
+        // 4. Tester une publication avec médias
+        $publicationWithMedia = \App\Models\Publication::has('media')->first();
+        if ($publicationWithMedia) {
+            $results['publication_test'] = [
+                'id' => $publicationWithMedia->id,
+                'title' => $publicationWithMedia->getLocalizedTitle(),
+                'featured_image_url' => $publicationWithMedia->getFeaturedImageUrl(),
+                'documents_count' => $publicationWithMedia->getDocumentsCount(),
+                'documents' => $publicationWithMedia->getFormattedDocuments(),
+            ];
+        }
+
+        return response()->json($results, 200, [], JSON_PRETTY_PRINT);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
 
 // Route de test pour la configuration FTP
 Route::get('/test-ftp', function() {
@@ -147,6 +214,14 @@ Route::get('/secure-media/{uuid}/{filename?}', [SecureMediaController::class, 's
 Route::get('/secure-media/{uuid}/conversions/{conversion}/{filename?}', [SecureMediaController::class, 'serveConversion'])
     ->name('secure-media.conversion')
     ->where('uuid', '[0-9a-f-]+');
+
+// Routes pour le proxy FTP
+Route::get('/ftp-media/{mediaId}', [FtpMediaProxyController::class, 'serve'])
+    ->name('ftp-media.serve')
+    ->where('mediaId', '[0-9]+');
+Route::get('/ftp-media/{mediaId}/conversions/{conversion}', [FtpMediaProxyController::class, 'serveConversion'])
+    ->name('ftp-media.serve-conversion')
+    ->where('mediaId', '[0-9]+');
 
 // Route de test pour diagnostiquer le problème de la page découverte
 Route::get('/test-decouverte-debug', function () {
