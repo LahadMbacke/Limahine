@@ -52,11 +52,11 @@
     >
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <x-card
-                title="La Philosophie de l'Excellence"
-                description="Une exploration profonde des fondements philosophiques qui guident notre approche de l'excellence académique."
-                :link="route('philosophy')"
+                title="Le Mouridisme de l'Excellence"
+                description="Une exploration profonde des fondements du mouridisme qui guident notre approche de l'excellence académique."
+                :link="route('mouridisme')"
                 :featured="true"
-                category="Philosophie"
+                category="Mouridisme"
                 date="Juillet 2025"
             />
 

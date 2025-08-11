@@ -179,15 +179,4 @@ class FilsCheikh extends Model implements HasMedia
     {
         return is_null($this->death_date);
     }
-
-    /**
-     * Méthode temporaire pour compatibilité avec l'ancien système
-     * @deprecated Implémenter le système de stockage local pour les fils du Cheikh
-     */
-    public function getFirstMediaUrl($collection = 'cover_image'): string
-    {
-        // Retourne une chaîne vide temporairement pour éviter les erreurs
-        // TODO: Implémenter le système de stockage local pour les fils du Cheikh
-        return '';
-    }
 }

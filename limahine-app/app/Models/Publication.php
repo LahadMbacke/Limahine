@@ -80,7 +80,7 @@ class Publication extends Model
             'fiqh' => 'Fiqh (Jurisprudence islamique)',
             'tasawwuf' => 'Tasawwuf (Éducation spirituelle)',
             'khassaids' => 'Khassaïds',
-            'philosophy' => 'Philosophie',
+            'mouridisme' => 'Mouridisme',
             'histoire' => 'Histoire',
             'temoignages' => 'Témoignages',
             'decouverte' => 'Découverte - Fils de Cheikh Ahmadou Bamba'

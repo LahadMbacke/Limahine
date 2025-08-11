@@ -129,9 +129,9 @@ class PublicationResource extends Resource
                                 'application/zip',
                                 'application/x-rar-compressed'
                             ])
-                            ->maxSize(10240)
+                            ->maxSize(61440) // 60MB
                             ->maxFiles(10)
-                            ->helperText('Les noms de fichiers seront automatiquement nettoyés pour l\'affichage. Formats acceptés : PDF, Word, Excel, PowerPoint, TXT, RTF, ZIP, RAR (Max: 10 fichiers, 10MB chacun)'),
+                            ->helperText('Les noms de fichiers seront automatiquement nettoyés pour l\'affichage. Formats acceptés : PDF, Word, Excel, PowerPoint, TXT, RTF, ZIP, RAR (Max: 10 fichiers, 60MB chacun)'),
 
                         Forms\Components\Textarea::make('document_names')
                             ->label('Noms personnalisés des documents (optionnel)')

@@ -45,9 +45,9 @@
 
             <!-- CTA Buttons -->
             <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-12 md:mb-16">
-                <a href="{{ route('philosophy') }}"
+                <a href="{{ route('mouridisme') }}"
                    class="bg-amber-600 hover:bg-amber-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-full text-sm md:text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    Découvrir la Philosophie
+                    Découvrir le Mouridisme
                 </a>
                 <a href="{{ route('writing') }}"
                    class="bg-white hover:bg-amber-50 text-amber-800 border-2 border-amber-600 px-6 md:px-8 py-3 md:py-4 rounded-full text-sm md:text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">

@@ -225,7 +225,7 @@
                         </svg>
                         <span class="text-sm font-medium">Accueil</span>
                     </a>
-                    <a href="{{ route('philosophy') }}" class="nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">
+                    <a href="{{ route('mouridisme') }}" class="nav-link {{ request()->routeIs('mouridisme') ? 'active' : '' }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 12v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
@@ -313,7 +313,7 @@
                         </svg>
                         Accueil
                     </a>
-                    <a href="{{ route('philosophy') }}" class="mobile-nav-link {{ request()->routeIs('philosophy') ? 'active' : '' }}">
+                    <a href="{{ route('mouridisme') }}" class="mobile-nav-link {{ request()->routeIs('mouridisme') ? 'active' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 12v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
@@ -413,7 +413,7 @@
                     <h3 class="text-lg font-elegant font-semibold mb-4 text-gradient-light">Navigation</h3>
                     <ul class="space-y-2">
                         <li><a href="{{ route('home') }}" class="footer-link">Accueil</a></li>
-                        <li><a href="{{ route('philosophy') }}" class="footer-link">Mouridisme</a></li>
+                        <li><a href="{{ route('mouridisme') }}" class="footer-link">Mouridisme</a></li>
                         <li><a href="{{ route('writing') }}" class="footer-link">Publications</a></li>
                         <li><a href="{{ route('trailers.index') }}" class="footer-link">Vidéo</a></li>
                     </ul>

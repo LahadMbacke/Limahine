@@ -22,9 +22,9 @@
     >
         <div class="grid-auto-fit">
             <x-card
-                title="Philosophie et Modernité"
-                description="Une réflexion sur les défis philosophiques de notre époque et les réponses que nous pouvons y apporter."
-                category="Philosophie"
+                title="Mouridisme et Modernité"
+                description="Une réflexion sur les défis du mouridisme dans notre époque et les réponses que nous pouvons y apporter."
+                category="Mouridisme"
                 date="Janvier 2025"
                 :featured="true"
                 link="#"
@@ -96,8 +96,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
                 </div>
-                <h3 class="font-elegant font-semibold text-accent-900 mb-2">Philosophie</h3>
-                <p class="text-accent-700 text-sm">Réflexions sur les questions fondamentales de l'existence</p>
+                <h3 class="font-elegant font-semibold text-accent-900 mb-2">Mouridisme</h3>
+                <p class="text-accent-700 text-sm">Réflexions sur les enseignements mourides et leur application moderne</p>
                 <x-badge type="primary" size="sm" class="mt-2">12 articles</x-badge>
             </div>
 

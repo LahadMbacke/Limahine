@@ -30,7 +30,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Routes pour les pages principales
 Route::get('/publications', [HomeController::class, 'writing'])->name('writing');
-Route::get('/philosophie', [HomeController::class, 'philosophy'])->name('philosophy');
+Route::get('/mouridisme', [HomeController::class, 'mouridisme'])->name('mouridisme');
 Route::get('/temoignages', [HomeController::class, 'testimonials'])->name('testimonials');
 Route::get('/chercheurs', [HomeController::class, 'chercheurs'])->name('chercheurs');
 

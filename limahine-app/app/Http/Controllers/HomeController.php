@@ -85,17 +85,17 @@ class HomeController extends Controller
         return view('publications-new', compact('publications', 'categories', 'featuredPublications'));
     }
 
-    public function philosophy()
+    public function mouridisme()
     {
-        $philosophyPublications = Publication::published()
-            ->byCategory('philosophy')
+        $mouridismePublications = Publication::published()
+            ->byCategory('mouridisme')
             ->latest('published_at')
             ->take(6)
             ->get();
 
-        $page = Page::where('page_type', 'philosophy')->published()->first();
+        $page = Page::where('page_type', 'mouridisme')->published()->first();
 
-        return view('philosophy-new', compact('philosophyPublications', 'page'));
+        return view('mouridisme-new', compact('mouridismePublications', 'page'));
     }
 
     public function testimonials()

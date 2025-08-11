@@ -16,7 +16,7 @@ class Page extends Model
         'content',
         'excerpt',
         'is_published',
-        'page_type', // home, philosophy, about, etc.
+        'page_type', // home, mouridisme, about, etc.
         'meta_title',
         'meta_description',
         'order'
@@ -39,7 +39,7 @@ class Page extends Model
     {
         return [
             'home' => 'Accueil',
-            'philosophy' => 'Philosophie',
+            'mouridisme' => 'Mouridisme',
             'about' => 'À propos',
             'contact' => 'Contact',
             'custom' => 'Personnalisée'

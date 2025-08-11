@@ -364,8 +364,8 @@ html[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
            rounded-full flex items-center justify-center font-bold text-sm;
   }
 
-  /* Philosophy specific */
-  .philosophy-section {
+  /* Mouridisme specific */
+  .mouridisme-section {
     @apply py-12 border-b border-neutral-200 last:border-b-0;
   }
 

@@ -21,7 +21,7 @@ trait FilamentFtpUpload
             ->visibility('private')
             ->preserveFilenames()
             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-            ->maxSize(10240) // 10MB
+            ->maxSize(61440) // 60MB
             ->enableDownload()
             ->enableOpen()
             ->imageEditor()

@@ -26,7 +26,7 @@ class FtpFileUpload extends Component
     public function updatedFiles()
     {
         $this->validate([
-            'files.*' => 'file|max:10240', // 10MB max
+            'files.*' => 'file|max:61440', // 60MB max
         ]);
 
         $this->uploadFiles();
