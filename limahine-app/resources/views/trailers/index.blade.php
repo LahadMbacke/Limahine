@@ -3,15 +3,15 @@
 @section('title', __('Vidéo - Enseignements de Cheikh Ahmadou Bamba'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+<div class="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-100">
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
-                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                <h1 class="text-4xl font-bold text-amber-900 mb-4">
                     {{ __('Vidéo') }}
                 </h1>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg text-amber-700 max-w-3xl mx-auto">
                     {{ __('Découvrez des extraits de nos enseignements vidéo sur la chaîne YouTube Limahine TV. Chaque trailer vous donne un aperçu des précieux enseignements de Cheikh Ahmadou Bamba.') }}
                 </p>
             </div>
@@ -28,10 +28,10 @@
                            name="search"
                            value="{{ request('search') }}"
                            placeholder="{{ __('Rechercher des trailers...') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
                 </div>
                 <div>
-                    <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
                         <option value="">{{ __('Toutes les catégories') }}</option>
                         @foreach($categories as $category)
                             <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <button type="submit" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
                     {{ __('Filtrer') }}
                 </button>
             </form>
@@ -59,7 +59,7 @@
                                  class="w-full h-48 object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                                 <a href="{{ route('trailers.show', $trailer->slug) }}"
-                                   class="bg-white text-green-600 rounded-full p-4 hover:bg-green-600 hover:text-white transition-colors">
+                                   class="bg-white text-amber-600 rounded-full p-4 hover:bg-amber-600 hover:text-white transition-colors">
                                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M8 5v10l7-5z"/>
                                     </svg>
@@ -81,7 +81,7 @@
                             <div class="flex items-center justify-between text-sm text-gray-500">
                                 <span>{{ $trailer->formatted_duration }}</span>
                                 @if($trailer->category)
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded">
+                                    <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs">
                                         {{ ucfirst($trailer->category) }}
                                     </span>
                                 @endif
@@ -95,10 +95,10 @@
 
         <!-- Tous les trailers -->
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+            <h2 class="text-2xl font-bold text-amber-900 mb-6">
                 {{ __('Tous les Trailers') }}
                 @if(request()->filled('search') || request()->filled('category'))
-                    <span class="text-lg font-normal text-gray-600">
+                    <span class="text-lg font-normal text-amber-600">
                         ({{ $trailers->total() }} {{ __('résultats') }})
                     </span>
                 @endif
@@ -114,7 +114,7 @@
                                      class="w-full h-40 object-cover">
                                 <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                                     <a href="{{ route('trailers.show', $trailer->slug) }}"
-                                       class="bg-white text-green-600 rounded-full p-3 hover:bg-green-600 hover:text-white transition-colors">
+                                       class="bg-white text-amber-600 rounded-full p-3 hover:bg-amber-600 hover:text-white transition-colors">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M8 5v10l7-5z"/>
                                         </svg>
@@ -131,12 +131,11 @@
                                     {{ $trailer->getTranslation('title', app()->getLocale()) }}
                                 </h3>
                                 <div class="flex items-center justify-between text-sm text-gray-500">
-                                    <span>{{ $trailer->formatted_duration }}</span>
-                                    @if($trailer->category)
-                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                                            {{ ucfirst($trailer->category) }}
-                                        </span>
-                                    @endif
+                                    <span>{{ $trailer->formatted_duration }}</span>                                @if($trailer->category)
+                                    <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs">
+                                        {{ ucfirst($trailer->category) }}
+                                    </span>
+                                @endif
                                 </div>
                             </div>
                         </div>

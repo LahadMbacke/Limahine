@@ -79,7 +79,6 @@ class Publication extends Model
         return [
             'fiqh' => 'Fiqh (Jurisprudence islamique)',
             'tasawwuf' => 'Tasawwuf (Éducation spirituelle)',
-            'sira' => 'Sîra (Biographie du Prophète ﷺ)',
             'khassaids' => 'Khassaïds',
             'philosophy' => 'Philosophie',
             'histoire' => 'Histoire',

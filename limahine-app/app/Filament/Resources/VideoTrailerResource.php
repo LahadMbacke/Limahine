@@ -151,7 +151,6 @@ class VideoTrailerResource extends Resource
                                     ->options([
                                         'fiqh' => 'Fiqh (Jurisprudence islamique)',
                                         'tasawwuf' => 'Taṣawwuf (Éducation spirituelle)',
-                                        'sira' => 'Sîra (Biographie du Prophète)',
                                         'khassaids' => 'Khassaids',
                                         'enseignements' => 'Enseignements généraux',
                                         'temoignages' => 'Témoignages',
@@ -221,7 +220,6 @@ class VideoTrailerResource extends Resource
                     ->color(fn (string $state): string => match ($state) {
                         'fiqh' => 'success',
                         'tasawwuf' => 'info',
-                        'sira' => 'warning',
                         'khassaids' => 'danger',
                         default => 'gray',
                     }),
@@ -253,7 +251,6 @@ class VideoTrailerResource extends Resource
                     ->options([
                         'fiqh' => 'Fiqh',
                         'tasawwuf' => 'Taṣawwuf',
-                        'sira' => 'Sîra',
                         'khassaids' => 'Khassaids',
                         'enseignements' => 'Enseignements',
                         'temoignages' => 'Témoignages',

@@ -12,17 +12,17 @@
 @endsection
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+<div class="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-100">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Breadcrumb -->
         <nav class="mb-6">
             <ol class="flex items-center space-x-2 text-sm text-gray-500">
-                <li><a href="{{ route('home') }}" class="hover:text-green-600">{{ is_array(__('Accueil')) ? 'Accueil' : __('Accueil') }}</a></li>
+                <li><a href="{{ route('home') }}" class="hover:text-amber-600">{{ is_array(__('Accueil')) ? 'Accueil' : __('Accueil') }}</a></li>
                 <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('trailers.index') }}" class="hover:text-green-600">{{ is_array(__('Trailers')) ? 'Trailers' : __('Trailers') }}</a></li>
+                <li><a href="{{ route('trailers.index') }}" class="hover:text-amber-600">{{ is_array(__('Trailers')) ? 'Trailers' : __('Trailers') }}</a></li>
                 <li><span class="mx-2">/</span></li>
-                <li class="text-gray-900 font-medium">{{ $trailer->getTranslation('title', app()->getLocale()) }}</li>
+                <li class="text-amber-900 font-medium">{{ $trailer->getTranslation('title', app()->getLocale()) }}</li>
             </ol>
         </nav>
 
@@ -47,11 +47,11 @@
                 <!-- Header -->
                 <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
                     <div class="flex-1">
-                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-amber-900 mb-3">
                             {{ $trailer->getTranslation('title', app()->getLocale()) }}
                         </h1>
 
-                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-amber-600 mb-4">
                             <span class="flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
@@ -61,7 +61,7 @@
                             </span>
 
                             @if($trailer->category)
-                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                                <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
                                     {{ ucfirst($trailer->category) }}
                                 </span>
                             @endif
@@ -78,9 +78,9 @@
                 <!-- Description -->
                 @if($trailer->getTranslation('description', app()->getLocale()))
                     <div class="mb-8">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ is_array(__('Description')) ? 'Description' : __('Description') }}</h2>
-                        <div class="prose prose-green max-w-none">
-                            <p class="text-gray-700 leading-relaxed">
+                        <h2 class="text-lg font-semibold text-amber-900 mb-3">{{ is_array(__('Description')) ? 'Description' : __('Description') }}</h2>
+                        <div class="prose prose-amber max-w-none">
+                            <p class="text-amber-700 leading-relaxed">
                                 {{ $trailer->getTranslation('description', app()->getLocale()) }}
                             </p>
                         </div>
@@ -90,10 +90,10 @@
                 <!-- Tags -->
                 @if($trailer->tags && count($trailer->tags) > 0)
                     <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Mots-clés') }}</h3>
+                        <h3 class="text-lg font-semibold text-amber-900 mb-3">{{ __('Mots-clés') }}</h3>
                         <div class="flex flex-wrap gap-2">
                             @foreach($trailer->tags as $tag)
-                                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm">
                                     #{{ $tag }}
                                 </span>
                             @endforeach

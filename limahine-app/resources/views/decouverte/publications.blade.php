@@ -91,8 +91,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($publications as $publication)
                 <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-amber-100">
-                    @if($publication->getFirstMediaUrl('featured_image'))
-                    <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $publication->getFirstMediaUrl('featured_image') }}')"></div>
+                    @if($publication->hasFeaturedImage())
+                    <div class="h-48 bg-cover bg-center" style="background-image: url('{{ $publication->getFeaturedImageUrl() }}')"></div>
                     @else
                     <div class="h-48 bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center">
                         <svg class="w-16 h-16 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">

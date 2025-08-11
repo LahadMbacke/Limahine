@@ -32,7 +32,6 @@ return [
     'categories' => [
         'fiqh' => 'Fiqh (Islamic Jurisprudence)',
         'tasawwuf' => 'Tasawwuf (Spiritual Education)',
-        'sira' => 'Sira (Biography of the Prophet)',
         'khassaids' => 'Khassaids',
         'enseignements' => 'General Teachings',
         'temoignages' => 'Testimonies',

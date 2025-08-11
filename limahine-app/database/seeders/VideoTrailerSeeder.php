@@ -66,29 +66,6 @@ class VideoTrailerSeeder extends Seeder
             ],
             [
                 'title' => [
-                    'fr' => 'La Sîra du Prophète Muhammad ﷺ - Épisode 1',
-                    'en' => 'The Sira of Prophet Muhammad ﷺ - Episode 1',
-                    'ar' => 'سيرة النبي محمد ﷺ - الحلقة الأولى'
-                ],
-                'description' => [
-                    'fr' => 'Première partie de l\'étude de la biographie prophétique selon les enseignements mourides.',
-                    'en' => 'First part of the study of the prophetic biography according to Mouride teachings.',
-                    'ar' => 'الجزء الأول من دراسة السيرة النبوية وفقا للتعاليم المريدية'
-                ],
-                'youtube_video_id' => 'XaSyKzUnxwc', // ID YouTube valide pour test
-                'youtube_original_url' => 'https://www.youtube.com/watch?v=XaSyKzUnxwc',
-                'start_time' => 0,
-                'end_time' => 60,
-                'trailer_duration' => 60,
-                'category' => 'sira',
-                'featured' => true,
-                'is_published' => true,
-                'published_at' => now()->subHours(12),
-                'tags' => ['sira', 'prophète', 'biographie'],
-                'slug' => 'sira-prophete-muhammad-episode-1'
-            ],
-            [
-                'title' => [
                     'fr' => 'Khassaïd : Poésie Spirituelle de Cheikh Ahmadou Bamba',
                     'en' => 'Khassaid: Spiritual Poetry of Sheikh Ahmadou Bamba',
                     'ar' => 'القصائد: الشعر الروحي للشيخ أحمدو بامبا'

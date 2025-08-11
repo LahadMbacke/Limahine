@@ -19,6 +19,7 @@ class Temoignage extends Model implements HasMedia
         'author_name',
         'author_title',
         'author_description',
+        'author_photo',
         'is_published',
         'published_at',
         'featured',
@@ -157,6 +158,4 @@ class Temoignage extends Model implements HasMedia
             ?: $this->getTranslation('author_title', 'fr')
             ?: $this->getTranslation('author_title', 'en');
     }
-
-    // Relations
 }

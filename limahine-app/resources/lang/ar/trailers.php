@@ -32,7 +32,6 @@ return [
     'categories' => [
         'fiqh' => 'الفقه (الفقه الإسلامي)',
         'tasawwuf' => 'التصوف (التعليم الروحي)',
-        'sira' => 'السيرة (سيرة النبي)',
         'khassaids' => 'القصائد',
         'enseignements' => 'التعاليم العامة',
         'temoignages' => 'الشهادات',
