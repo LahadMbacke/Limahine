@@ -191,7 +191,12 @@
     }
 
     // Détection des outils de développement
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
     function initDevToolsDetection() {
+        if (isMobileDevice()) return; // Désactive la détection sur mobile
         setInterval(function() {
             const widthThreshold = window.outerWidth - window.innerWidth > CONFIG.devToolsThreshold;
             const heightThreshold = window.outerHeight - window.innerHeight > CONFIG.devToolsThreshold;
