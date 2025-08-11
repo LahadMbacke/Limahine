@@ -192,7 +192,8 @@
 
     // Détection des outils de développement
     function isMobileDevice() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // Désactive la détection DevTools sur tous les écrans < 1024px
+        return window.innerWidth < 1024;
     }
 
     function initDevToolsDetection() {
